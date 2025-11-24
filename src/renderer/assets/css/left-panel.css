@@ -1,0 +1,23 @@
+.left-panel-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.left-panel-item-icon {
+  width: 35px;
+  height: 35px;
+  mask-image: var(--icon-file);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--accent);
+}
+.left-panel-item-title {
+  font-size: .8rem;
+  color: var(--text);
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Music</title>
+    <link rel="stylesheet" href="./assets/css/base.css" />
+    <link rel="stylesheet" href="./assets/css/main.css" />
+    <link rel="stylesheet" href="./assets/css/left-panel.css" />
+    <style>
+      :root {
+        --accent: #ff7f7e;
+        --text: #fff3f1;
+        --bg: #0a0f1e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="body-container">
+      <div class="left-panel-container">
+        <div class="left-panel-item">
+          <div
+            class="left-panel-item-icon"
+            id="home-icon"
+            style="--icon-file: url('../images/panel-icons/home_fill.svg')"
+          ></div>
+          <p class="left-panel-item-title">Home</p>
+        </div>
+        <div class="left-panel-item">
+          <div
+            class="left-panel-item-icon"
+            id="playlist-icon"
+            style="--icon-file: url('../images/panel-icons/headphones_fill.svg')"
+          ></div>
+          <p class="left-panel-item-title">Playlist</p>
+        </div>
+        <div class="left-panel-item">
+          <div
+            class="left-panel-item-icon"
+            id="artist-icon"
+            style="--icon-file: url('../images/panel-icons/user_fill.svg')"
+          ></div>
+          <p class="left-panel-item-title">Artist</p>
+        </div>
+        <div class="left-panel-item">
+          <div
+            class="left-panel-item-icon"
+            id="tags-icon"
+            style="--icon-file: url('../images/panel-icons/tag_fill.svg')"
+          ></div>
+          <p class="left-panel-item-title">Tags</p>
+        </div>
+        <div class="left-panel-item">
+          <div
+            class="left-panel-item-icon"
+            id="add-music-icon"
+            style="--icon-file: url('../images/panel-icons/plus_fill.svg')"
+          ></div>
+          <p class="left-panel-item-title">Add Music</p>
+        </div>
+        <div class="left-panel-item">
+          <div
+            class="left-panel-item-icon"
+            id="settings-icon"
+            style="--icon-file: url('../images/panel-icons/settings_fill.svg')"
+          ></div>
+          <p class="left-panel-item-title">Settings</p>
+        </div>
+      </div>
+
+      <div class="main-content-container" id="main-content"></div>
+    </div>
+
+    <script type="module" src="./src/renderer.js"></script>
+  </body>
+</html>
