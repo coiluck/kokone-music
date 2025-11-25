@@ -1,4 +1,5 @@
-import { contextBridge } from 'electron'
+// src/preload/index.js
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -11,6 +12,11 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    // dataの読み書き
+    contextBridge.exposeInMainWorld('settings', {
+      get: (key) => ipcRenderer.invoke('settings:get', key),
+      set: (key, value) => ipcRenderer.invoke('settings:set', key, value)
+});
   } catch (error) {
     console.error(error)
   }

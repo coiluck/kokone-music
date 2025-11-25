@@ -1,7 +1,9 @@
+// src/main/index.js
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { setupStoreIPC } from './store.js'
 
 function createWindow() {
   // Create the browser window.
@@ -10,7 +12,7 @@ function createWindow() {
     height: 500,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -41,6 +43,8 @@ function createWindow() {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+
+  setupStoreIPC()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

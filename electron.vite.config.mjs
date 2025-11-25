@@ -1,4 +1,5 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { version } from './package.json'
 
 export default defineConfig({
   main: {
@@ -7,5 +8,9 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()]
   },
-  renderer: {}
+  renderer: {
+    define: {
+      'APP_VERSION': JSON.stringify(version)
+    }
+  }
 })

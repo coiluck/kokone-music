@@ -5,29 +5,52 @@ export function changeModal(modalName, scrollContainer, duration = 500, isFlex =
   if (isChanging) {
     return;
   }
+
+  const targetItem = document.getElementById(modalName);
+  const targetIcon = targetItem.querySelector('.left-panel-item-icon');
+
+  if (targetIcon && targetIcon.classList.contains('active')) {
+    return;
+  }
+
   isChanging = true;
+
+  document.querySelectorAll('.left-panel-item-icon.active').forEach(function(icon) {
+    icon.classList.remove('active');
+  });
+  if (targetIcon) {
+    targetIcon.classList.add('active');
+  }
   // すべてのモーダルを閉じる
   document.querySelectorAll('.modal').forEach(function(modal) {
     modal.classList.remove('fade-in');
-    modal.classList.add('fade-out')
+    modal.classList.add('fade-out');
   });
+
   setTimeout(function() {
     // targetモーダルを表示
     document.querySelectorAll('.modal').forEach(function(modal) {
       modal.style.display = 'none';
     });
-    document.getElementById(`modal-${modalName}`).classList.remove('fade-out');
-    if (isFlex) {
-      document.getElementById(`modal-${modalName}`).style.display = 'flex';
-    } else {
-      document.getElementById(`modal-${modalName}`).style.display = 'block';
+    
+    const targetModal = document.getElementById(`modal-${modalName}`);
+    if (targetModal) {
+      targetModal.classList.remove('fade-out');
+      if (isFlex) {
+        targetModal.style.display = 'flex';
+      } else {
+        targetModal.style.display = 'block';
+      }
+      targetModal.classList.add('fade-in');
     }
+
     // スクロールをリセット
     if (scrollContainer) {
-      document.querySelector(`${scrollContainer}`).scrollTop = 0;
+      const container = document.querySelector(`${scrollContainer}`);
+      if (container) container.scrollTop = 0;
     }
-    document.getElementById(`modal-${modalName}`).classList.add('fade-in');
   }, duration);
+
   setTimeout(function() {
     isChanging = false;
   }, duration);

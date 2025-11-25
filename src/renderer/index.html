@@ -6,14 +6,27 @@
     <link rel="stylesheet" href="./assets/css/base.css" />
     <link rel="stylesheet" href="./assets/css/main.css" />
     <link rel="stylesheet" href="./assets/css/left-panel.css" />
+    <link rel="stylesheet" href="./assets/css/settings.css" />
     <style>
+      @font-face {
+        font-family: 'mamelon3.5';
+        src: url('./assets/fonts/Mamelon-3.5HiRegular.woff2') format('woff2');
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Noto Sans JP';
+        src: url('./assets/fonts/NotoSansJP-Regular.ttf') format('ttf');
+        font-display: swap;
+      }
       :root {
+        --font: 'Noto Sans JP', sans-serif;
         --accent: #ff7f7e;
         --text: #fff3f1;
         --bg: #0a0f1e;
-        --bg-mild: #1a1f2e;
-        --radius-big: 10px;
-        --radius-small: 5px;
+        --bg-mild: #1a1f2e; /* これはこっちで決定 */
+        --bg-hover: rgba(255, 255, 255, 0.1); /* これはこっちで決定 */
+        --radius-big: 20px;
+        --radius-small: 10px;
       }
     </style>
   </head>
@@ -66,22 +79,93 @@
 
       <div class="main-content-container" id="main-content">
         <div class="modal" id="modal-home">
-          <div class="modal-title">Home</div>
+          <div class="modal-section-conetainer">
+            <div class="modal-title">Home</div>
+          </div>
         </div>
+
         <div class="modal" id="modal-playlist">
-          <div class="modal-title">Playlist</div>
+          <div class="modal-section-conetainer">
+            <div class="modal-title">Playlist</div>
+          </div>
         </div>
+
         <div class="modal" id="modal-artist">
-          <div class="modal-title">Artist</div>
+          <div class="modal-section-conetainer">
+            <div class="modal-title">Artist</div>
+          </div>
         </div>
+
         <div class="modal" id="modal-tags">
-          <div class="modal-title">Tags</div>
+          <div class="modal-section-conetainer">
+            <div class="modal-title">Tags</div>
+          </div>
         </div>
+
         <div class="modal" id="modal-add-music">
-          <div class="modal-title">Add Music</div>
+          <div class="modal-section-conetainer">
+            <div class="modal-title">Add Music</div>
+          </div>
         </div>
+
         <div class="modal" id="modal-settings">
-          <div class="modal-title">Settings</div>
+          <div class="modal-section-conetainer">
+            <div class="modal-title">Settings</div>
+            <div class="modal-sub-title">外観</div>
+            <section class="setting-section">
+              <div class="setting-item">
+                <span class="setting-label">フォント</span>
+                <select class="setting-select" id="setting-font-select">
+                  <option value="serif">OS Default Serif</option>
+                  <option value='"Noto Sans JP", sans-serif'>Noto Sans JP</option>
+                  <option value='"Mamelon3.5", sans-serif'>マメロン</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <span class="setting-label">アクセントカラー</span>
+                <div id="setting-color-accent" class="setting-color">
+                  <span class="setting-color-value">#ff7f7e</span>
+                  <input type="color" name="accent" value="#ff7f7e">
+                </div>
+              </div>
+              <div class="setting-item">
+                <span class="setting-label">テキストカラー</span>
+                <div id="setting-color-text" class="setting-color">
+                  <span class="setting-color-value">#fff3f1</span>
+                  <input type="color" name="text" value="#fff3f1">
+                </div>
+              </div>
+              <div class="setting-item">
+                <span class="setting-label">背景</span>
+                <div id="setting-color-bg" class="setting-color">
+                  <span class="setting-color-value">#0a0f1e</span>
+                  <input type="color" name="bg" value="#0a0f1e">
+                </div>
+              </div>
+            </section>
+            <div class="modal-sub-title">再生</div>
+            <section class="setting-section">
+              <div class="setting-item">
+                <span>曲の音量を正規化</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </section>
+            <div class="modal-sub-title">その他</div>
+            <section class="setting-section">
+              <div class="setting-item">
+                <span>バージョン</span>
+                <span id="app-version"></span>
+              </div>
+              <div class="setting-item">
+                <span>ご要望・お問い合わせ</span>
+                <span id="app-call">こちらから</span>
+              </div>
+            </section>
+            <p class="app-dev-info">Developed by KOKONE Project</p>
+          </div>
         </div>
       </div>
     </div>
