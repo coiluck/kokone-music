@@ -24,12 +24,16 @@
   grid-area: left-panel;
   display: flex;
   flex-direction: column;
+  gap: 10px;
   background-color: #333;
 }
 
 @media (max-width: 480px) {
   .left-panel-container {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    grid-auto-flow: row;
+    gap: 0;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -48,4 +52,10 @@
   .main-content-container {
     padding-bottom: 50px;
   }
+}
+
+.modal {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
 }

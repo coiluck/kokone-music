@@ -2,13 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   padding: 5px;
   cursor: pointer;
+  overflow: visible;
   transition: all 0.3s ease;
 }
 
-.left-panel-item-icon {
+.left-panel-item .left-panel-item-icon {
   width: 35px;
   height: 35px;
   mask-image: var(--icon-file);
@@ -17,7 +18,18 @@
   mask-position: center;
   background-color: var(--accent);
 }
-.left-panel-item-title {
+
+@media (max-width: 480px) {
+  .left-panel-item .left-panel-item-icon {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.left-panel-item .left-panel-item-title {
   font-size: .8rem;
   color: var(--text);
+  text-wrap: nowrap;
+  white-space: nowrap;
+  overflow: visible;
 }
