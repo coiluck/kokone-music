@@ -1,26 +1,21 @@
-function init() {
-  window.addEventListener('DOMContentLoaded', () => {
-    doAThing()
-  })
-}
+// src/renderer/src/renderer.js
+import { changeModal } from './modules/changeModal.js';
 
-function doAThing() {
-  const versions = window.electron.process.versions
-  replaceText('.electron-version', `Electron v${versions.electron}`)
-  replaceText('.chrome-version', `Chromium v${versions.chrome}`)
-  replaceText('.node-version', `Node v${versions.node}`)
-
-  const ipcHandlerBtn = document.getElementById('ipcHandler')
-  ipcHandlerBtn?.addEventListener('click', () => {
-    window.electron.ipcRenderer.send('ping')
-  })
-}
-
-function replaceText(selector, text) {
-  const element = document.querySelector(selector)
-  if (element) {
-    element.innerText = text
-  }
-}
-
-init()
+window.addEventListener('DOMContentLoaded', () => {
+  // 初期modal
+  changeModal('home');
+  document.getElementById('home').querySelector('.left-panel-item-icon').classList.add('active');
+  // modal切り替え
+  document.querySelectorAll('.left-panel-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      if (item.querySelector('.left-panel-item-icon').classList.contains('active')) {
+        return;
+      }
+      document.querySelectorAll('.left-panel-item-icon.active').forEach(function(item) {
+        item.classList.remove('active');
+      });
+      item.querySelector('.left-panel-item-icon').classList.add('active');
+      changeModal(item.id);
+    });
+  });
+})

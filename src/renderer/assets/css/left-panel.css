@@ -16,6 +16,10 @@
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
+  background-color: var(--text);
+  transition: all 0.4s ease;
+}
+.left-panel-item .left-panel-item-icon.active {
   background-color: var(--accent);
 }
 

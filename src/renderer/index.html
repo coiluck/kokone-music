@@ -11,56 +11,53 @@
         --accent: #ff7f7e;
         --text: #fff3f1;
         --bg: #0a0f1e;
+        --bg-mild: #1a1f2e;
+        --radius-big: 10px;
+        --radius-small: 5px;
       }
     </style>
   </head>
   <body>
     <div class="body-container">
       <div class="left-panel-container">
-        <div class="left-panel-item">
+        <div class="left-panel-item" id="home">
           <div
             class="left-panel-item-icon"
-            id="home-icon"
             style="--icon-file: url('../images/panel-icons/home_fill.svg')"
           ></div>
           <p class="left-panel-item-title">Home</p>
         </div>
-        <div class="left-panel-item">
+        <div class="left-panel-item" id="playlist">
           <div
             class="left-panel-item-icon"
-            id="playlist-icon"
             style="--icon-file: url('../images/panel-icons/headphones_fill.svg')"
           ></div>
           <p class="left-panel-item-title">Playlist</p>
         </div>
-        <div class="left-panel-item">
+        <div class="left-panel-item" id="artist">
           <div
             class="left-panel-item-icon"
-            id="artist-icon"
             style="--icon-file: url('../images/panel-icons/user_fill.svg')"
           ></div>
           <p class="left-panel-item-title">Artist</p>
         </div>
-        <div class="left-panel-item">
+        <div class="left-panel-item" id="tags">
           <div
             class="left-panel-item-icon"
-            id="tags-icon"
             style="--icon-file: url('../images/panel-icons/tag_fill.svg')"
           ></div>
           <p class="left-panel-item-title">Tags</p>
         </div>
-        <div class="left-panel-item">
+        <div class="left-panel-item" id="add-music">
           <div
             class="left-panel-item-icon"
-            id="add-music-icon"
             style="--icon-file: url('../images/panel-icons/plus_fill.svg')"
           ></div>
           <p class="left-panel-item-title">Add Music</p>
         </div>
-        <div class="left-panel-item">
+        <div class="left-panel-item" id="settings">
           <div
             class="left-panel-item-icon"
-            id="settings-icon"
             style="--icon-file: url('../images/panel-icons/settings_fill.svg')"
           ></div>
           <p class="left-panel-item-title">Settings</p>
@@ -68,12 +65,24 @@
       </div>
 
       <div class="main-content-container" id="main-content">
-        <div class="modal" id="modal-home"></div>
-        <div class="modal" id="modal-playlist"></div>
-        <div class="modal" id="modal-artist"></div>
-        <div class="modal" id="modal-tags"></div>
-        <div class="modal" id="modal-add-music"></div>
-        <div class="modal" id="modal-settings"></div>
+        <div class="modal" id="modal-home">
+          <div class="modal-title">Home</div>
+        </div>
+        <div class="modal" id="modal-playlist">
+          <div class="modal-title">Playlist</div>
+        </div>
+        <div class="modal" id="modal-artist">
+          <div class="modal-title">Artist</div>
+        </div>
+        <div class="modal" id="modal-tags">
+          <div class="modal-title">Tags</div>
+        </div>
+        <div class="modal" id="modal-add-music">
+          <div class="modal-title">Add Music</div>
+        </div>
+        <div class="modal" id="modal-settings">
+          <div class="modal-title">Settings</div>
+        </div>
       </div>
     </div>
 
