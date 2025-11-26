@@ -122,6 +122,23 @@
                 </select>
               </div>
               <div class="setting-item">
+                <span class="setting-label">アイコンスタイル</span>
+                <div id="setting-icon-style" class="setting-icon-style">
+                  <input type="radio" name="icon-style" id="icon-outline" value="outline">
+                  <label for="icon-outline" class="icon-style-option">
+                    <span class="icon-preview">
+                      <span class="icon-preview-outline"></span>
+                    </span>
+                  </label>
+                  <input type="radio" name="icon-style" id="icon-fill" value="fill" checked>
+                  <label for="icon-fill" class="icon-style-option">
+                    <span class="icon-preview">
+                      <span class="icon-preview-fill"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
                 <span class="setting-label">アクセントカラー</span>
                 <div id="setting-color-accent" class="setting-color">
                   <span class="setting-color-value">#ff7f7e</span>
@@ -136,21 +153,56 @@
                 </div>
               </div>
               <div class="setting-item">
-                <span class="setting-label">背景</span>
+                <span class="setting-label">背景カラー</span>
                 <div id="setting-color-bg" class="setting-color">
                   <span class="setting-color-value">#0a0f1e</span>
                   <input type="color" name="bg" value="#0a0f1e">
                 </div>
               </div>
+              <div class="setting-item">
+                <button id="setting-reset">デフォルトに戻す</button>
+              </div>
+            </section>
+            <div class="modal-sub-title">アプリ</div>
+            <section class="setting-section">
+              <div class="setting-item">
+                <span>ウィンドウサイズを記憶</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
             </section>
             <div class="modal-sub-title">再生</div>
             <section class="setting-section">
+              <div class="setting-item">
+                <span>最近聞いた曲を表示</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <span>「最近」の判定時間</span>
+                <select class="setting-select" id="setting-recent-select">
+                  <option value="3">3日</option>
+                  <option value="7">7日</option>
+                  <option value="30">30日</option>
+                </select>
+              </div>
               <div class="setting-item">
                 <span>曲の音量を正規化</span>
                 <label class="switch">
                   <input type="checkbox">
                   <span class="slider"></span>
                 </label>
+              </div>
+            </section>
+            <div class="modal-sub-title">ストレージ</div>
+            <section class="setting-section">
+              <div class="setting-item">
+                <span>エクスポート</span>
+                <div id="setting-export">フォルダを開く</div>
               </div>
             </section>
             <div class="modal-sub-title">その他</div>
@@ -171,5 +223,6 @@
     </div>
 
     <script type="module" src="./src/renderer.js"></script>
+    <script type="module" src="./src/settings.js"></script>
   </body>
 </html>

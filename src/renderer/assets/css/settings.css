@@ -66,12 +66,11 @@ input[type="color"]::-webkit-color-swatch {
 }
 /* select */
 select.setting-select {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-hover);
   border: none;
   padding: 4px 8px;
   border-radius: var(--radius-small);
-  font-size: 14px;
-  cursor: pointer;
+  font-size: .8rem;
   outline: none;
 }
 select.setting-select option {
@@ -95,11 +94,56 @@ section.setting-section .setting-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   margin: 5px;
 }
 
 #modal-settings > .modal-section-conetainer > p {
   font-size: .8rem;
+}
+
+
+.setting-icon-style {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 5px;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-small);
+  padding: 2px;
+}
+.setting-icon-style input[type="radio"] {
+  display: none;
+}
+.icon-style-option {
+  padding: 3px 15px;
+  border-radius: calc(var(--radius-small) - 2px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.icon-style-option:hover {
+  background-color: var(--bg-hover);
+}
+.setting-icon-style input[type="radio"]:checked + .icon-style-option {
+  background-color: var(--accent);
+}
+.icon-preview {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-preview-outline {
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+}
+.icon-preview-fill {
+  width: 10px;
+  height: 10px;
+  background-color: currentColor;
+  border-radius: 2px;
 }
 
 
@@ -115,9 +159,26 @@ section.setting-section .setting-item {
 }
 
 
-
+#setting-reset {
+  margin: 0 auto;
+  padding: 5px 10px;
+  color: var(--accent);
+  font-size: .8rem;
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-small);
+  transition: all 0.3s ease;
+}
+#setting-reset:hover {
+  color: var(--text);
+  background-color: var(--accent);
+}
+#setting-reset:active {
+  transform: scale(0.95);
+}
 #app-call {
   text-decoration: underline;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 #app-call:hover {
