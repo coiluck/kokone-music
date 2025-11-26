@@ -30,6 +30,10 @@ export async function applySettings() {
       await window.settings.set('colors', currentColors);
     });
   });
+  // icon用
+  const userIconStyle = await getStoreIconStyle();
+  applyIconStyle(userIconStyle);
+  document.querySelector(`input[name="icon-style"][value="${userIconStyle}"]`).checked = true;
   // 下の関数を集めておく
 }
 
@@ -151,3 +155,24 @@ function makeMildBg(baseColor, mode, percent = 10) {
   return `#${toHex(r2)}${toHex(g2)}${toHex(b2)}`;
 }
 
+// icon style
+async function getStoreIconStyle() {
+  const iconStyle = await window.settings.get('icon-style');
+  return iconStyle || 'outline';
+}
+function applyIconStyle(iconStyle) { // fill or outline
+  const suffix = iconStyle === 'outline' ? 'line' : 'fill';
+
+  document.querySelectorAll('.left-panel-item').forEach((item) => {
+    const currentStyle = item.querySelector('.left-panel-item-icon').style.getPropertyValue('--icon-file');
+    const newStyle = currentStyle.replace(/_(fill|line)\.svg/, `_${suffix}.svg`);
+    item.querySelector('.left-panel-item-icon').style.setProperty('--icon-file', newStyle);
+  });
+
+  window.settings.set('icon-style', iconStyle);
+}
+document.querySelectorAll('input[name="icon-style"]').forEach((radio) => {
+  radio.addEventListener('change', (e) => {
+    applyIconStyle(e.target.value);
+  });
+});

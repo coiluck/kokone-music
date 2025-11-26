@@ -19,6 +19,10 @@ const schema = {
       text:   { type: 'string' },
       bg:     { type: 'string' }
     }
+  },
+  'icon-style': {
+    type: 'string',
+    default: 'fill'
   }
 };
 
