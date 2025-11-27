@@ -1,4 +1,6 @@
 // src/renderer/src/settings.js
+let userColors = {};
+
 export async function applySettings() {
   const userFont = await getStoreFont();
   applyFont(userFont);
@@ -9,7 +11,7 @@ export async function applySettings() {
     applyFont(selectedFont);
   });
   // color用
-  const userColors = await getStoreColors();
+  userColors = await getStoreColors();
   applyColors(userColors);
   ['accent', 'text', 'bg'].forEach(key => {
     const input = document.querySelector(`input[name="${key}"]`);
@@ -25,8 +27,7 @@ export async function applySettings() {
     input.addEventListener('change', async (e) => {
       // 保存
       const newValue = e.target.value;
-      const currentColors = await getStoreColors();
-      currentColors[key] = newValue;
+      userColors[key] = newValue;
       await window.settings.set('colors', currentColors);
     });
   });
@@ -51,6 +52,7 @@ document.getElementById('setting-reset').addEventListener('click', async () => {
   applyFont(DEFAULT_FONT);
   document.getElementById('setting-font-select').value = DEFAULT_FONT;
   // color
+  userColors = { ...DEFAULT_COLORS };
   applyColors(DEFAULT_COLORS);
   ['accent', 'text', 'bg'].forEach(key => {
     const input = document.querySelector(`input[name="${key}"]`);
