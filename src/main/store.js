@@ -1,6 +1,8 @@
 // src/main/store.js
 import Store from 'electron-store';
 import { ipcMain } from 'electron';
+import path from 'path';
+import fs from 'fs';
 
 const schema = {
   'font': {
@@ -37,6 +39,38 @@ export function setupStoreIPC() {
   ipcMain.handle('settings:set', (_event, key, value) => {
     store.set(key, value);
     return true;
+  });
+
+  // electron-storeのconfigファイルがあるフォルダを取得
+  const userDataPath = path.dirname(store.path);
+  // その中のmusicフォルダ
+  const musicDir = path.join(userDataPath, 'music');
+
+  if (!fs.existsSync(musicDir)) {
+    fs.mkdirSync(musicDir, { recursive: true });
+  }
+
+  ipcMain.handle('music:get-path', () => {
+    return musicDir;
+  });
+
+  // ファイルを保存
+  ipcMain.handle('music:save-files', async (_event, filePaths) => {
+    const results = [];
+    for (const srcPath of filePaths) {
+      try {
+        const fileName = path.basename(srcPath);
+        const destPath = path.join(musicDir, fileName);
+
+        await fs.promises.copyFile(srcPath, destPath);
+        results.push({ success: true, file: fileName });
+        console.log(`Saved: ${fileName}`);
+      } catch (error) {
+        console.error(`Failed to save ${srcPath}:`, error);
+        results.push({ success: false, file: srcPath, error: error.message });
+      }
+    }
+    return results;
   });
 }
 

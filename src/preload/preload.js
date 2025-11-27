@@ -1,5 +1,5 @@
-// src/preload/index.js
-import { contextBridge, ipcRenderer } from 'electron'
+// src/preload/preload.js
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -16,7 +16,12 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('settings', {
       get: (key) => ipcRenderer.invoke('settings:get', key),
       set: (key, value) => ipcRenderer.invoke('settings:set', key, value)
-});
+    });
+    // 曲ファイルの保存
+    contextBridge.exposeInMainWorld('music', {
+      saveFiles: (filePaths) => ipcRenderer.invoke('music:save-files', filePaths),
+      getPath: (file) => webUtils.getPathForFile(file)
+    });
   } catch (error) {
     console.error(error)
   }

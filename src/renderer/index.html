@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./assets/css/main.css" />
     <link rel="stylesheet" href="./assets/css/left-panel.css" />
     <link rel="stylesheet" href="./assets/css/settings.css" />
+    <link rel="stylesheet" href="./assets/css/add-music.css" />
     <style>
       @font-face {
         font-family: 'mamelon3.5';
@@ -105,6 +106,18 @@
         <div class="modal" id="modal-add-music">
           <div class="modal-section-conetainer">
             <div class="modal-title">Add Music</div>
+
+            <div class="modal-sub-title">ファイルを追加</div>
+            <section class="add-music-section">
+              <div class="add-music-drop-container" id="add-music-drop">
+                <div class="add-music-drop-icon"></div>
+                <p class="add-music-drop-maintext">MP3ファイルをドラッグ&ドロップ</p>
+                <p class="add-music-drop-subtext">または</p>
+                <button id="add-music-select-button">
+                  ファイルを選択
+                </button>
+              </div>
+            </section>
           </div>
         </div>
 

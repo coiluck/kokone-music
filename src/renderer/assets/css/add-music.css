@@ -1,0 +1,69 @@
+#modal-add-music > .modal-section-conetainer > .modal-sub-title {
+  margin-top: 40px;
+}
+
+section.add-music-section {
+  padding: 10px;
+  font-size: .8rem;
+  background-color: var(--bg-mild);
+  border-radius: var(--radius-small);
+}
+
+.add-music-drop-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  border: 2px dashed rgba(255, 255, 255, 0);
+  border-radius: var(--radius-small);
+  background-color: var(--bg-hover);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.add-music-drop-container:hover {
+  border-color: var(--accent);
+}
+.add-music-drop-container.drag-over {
+  border-color: var(--accent);
+  transform: scale(1.02);
+}
+
+.add-music-drop-icon {
+  width: 60px;
+  height: 60px;
+  mask-image: url('../images/upload.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+}
+
+.add-music-drop-maintext {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.add-music-drop-subtext {
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: .6;
+}
+
+#add-music-select-button {
+  padding: 6px 15px;
+  font-size: 0.8rem;
+  color: var(--text);
+  background-color: var(--bg-hover);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-small);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#add-music-select-button:hover {
+  border-color: var(--accent);
+}
+#add-music-select-button:active {
+  transform: scale(0.95);
+}
