@@ -62,11 +62,19 @@ export function setupStoreIPC() {
         const fileName = path.basename(srcPath);
         const destPath = path.join(musicDir, fileName);
 
+        if (fs.existsSync(destPath)) {
+          // 存在する場合
+          results.push({
+            success: false,
+            status: 'exists',
+            file: fileName
+          });
+          continue;
+        }
+
         await fs.promises.copyFile(srcPath, destPath);
         results.push({ success: true, file: fileName });
-        console.log(`Saved: ${fileName}`);
       } catch (error) {
-        console.error(`Failed to save ${srcPath}:`, error);
         results.push({ success: false, file: srcPath, error: error.message });
       }
     }

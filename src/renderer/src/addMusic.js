@@ -30,6 +30,8 @@ export function setupAddMusic() {
 
   // ドロップされた時の処理
   dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     const files = e.dataTransfer.files;
     handleFiles(files);
   });
@@ -38,26 +40,61 @@ export function setupAddMusic() {
 async function handleFiles(files) {
   if (!files || files.length === 0) return;
 
-  const filePaths = Array.from(files).map(file => {
-    // webUtils経由でパスを取得
+  const filesArray = Array.from(files);
+
+  const mp3Files = filesArray.filter(file => {
+    return file.name.toLowerCase().endsWith('.mp3');
+  });
+  const invalidFiles = filesArray.filter(file => {
+    return !file.name.toLowerCase().endsWith('.mp3');
+  });
+
+  if (mp3Files.length === 0 && invalidFiles.length > 0) {
+    alert('MP3ファイル以外はサポートされていません');
+    return;
+  }
+
+  const filePaths = mp3Files.map(file => {
     return window.music.getPath(file);
   });
 
   try {
-    // preload.js で定義した music.saveFiles を呼び出し
     const results = await window.music.saveFiles(filePaths);
 
     // 結果の集計
-    const successCount = results.filter(r => r.success).length;
-    const failCount = results.length - successCount;
+    const successItems = results.filter(r => r.success);
+    const existItems = results.filter(r => !r.success && r.status === 'exists');
+    const errorItems = results.filter(r => !r.success && r.status !== 'exists');
 
-    if (successCount > 0) {
-      alert(`${successCount} 曲を追加しました！`);
+    let message = '';
+
+    if (successItems.length > 0) {
+      message += `追加しました: ${successItems.length} 曲\n`;
     }
 
-    if (failCount > 0) {
-      console.error(`${failCount} 件の追加に失敗しました`);
+    if (existItems.length > 0) {
+      if (message) message += '\n';
+      message += `既に存在するためスキップしました: 以下の ${existItems.length} 曲\n`;
+      existItems.forEach(item => {
+        message += `・${item.file}\n`;
+      });
     }
+
+    if (invalidFiles.length > 0) {
+      if (message) message += '\n';
+      message += `MP3ファイル以外の拡張子のためスキップしました: 以下の ${invalidFiles.length} 件\n`;
+      invalidFiles.forEach(item => {
+        message += `・${item.name}\n`;
+      });
+    }
+
+    if (errorItems.length > 0) {
+      if (message) message += '\n';
+      message += `エラーが発生: ${errorItems.length} 件`;
+      console.error('エラー詳細:', errorItems);
+    }
+
+    alert(message);
 
   } catch (error) {
     console.error('詳細なエラー:', error);
