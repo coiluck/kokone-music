@@ -2,6 +2,7 @@
 import { changeModal } from './modules/changeModal.js';
 import { applySettings } from './settings.js'
 import { setupAddMusic } from './addMusic.js'
+import { setupHome } from './home.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   // 初期modal
@@ -19,4 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   applySettings();
   // add music
   setupAddMusic();
+  // home
+  setupHome();
 });

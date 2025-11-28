@@ -3,6 +3,7 @@ import Store from 'electron-store';
 import { ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import * as mm from 'music-metadata';
 
 const schema = {
   'font': {
@@ -79,6 +80,48 @@ export function setupStoreIPC() {
       }
     }
     return results;
+  });
+
+
+  ipcMain.handle('music:get-all-music', async () => {
+    try {
+      const files = fs.readdirSync(musicDir);
+
+      const musicList = await Promise.all(
+        files
+          .filter(file => file.toLowerCase().endsWith('.mp3'))
+          .map(async (file) => {
+            const filePath = path.join(musicDir, file);
+
+            try {
+              const metadata = await mm.parseFile(filePath);
+
+              return {
+                fileName: file,
+                path: filePath,
+                title: metadata.common.title || file,
+                artist: metadata.common.artist || 'Unknown Artist',
+                duration: metadata.format.duration || 0 // seconds
+              };
+            } catch (e) {
+              console.error(`Failed to parse ${file}:`, e);
+              return {
+                fileName: file,
+                path: filePath,
+                title: file,
+                artist: 'Unknown',
+                duration: 0
+              };
+            }
+          })
+      );
+
+      return musicList;
+
+    } catch (error) {
+      console.error('Error getting music list:', error);
+      return [];
+    }
   });
 }
 

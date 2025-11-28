@@ -20,7 +20,8 @@ if (process.contextIsolated) {
     // 曲ファイルの保存
     contextBridge.exposeInMainWorld('music', {
       saveFiles: (filePaths) => ipcRenderer.invoke('music:save-files', filePaths),
-      getPath: (file) => webUtils.getPathForFile(file)
+      getPath: (file) => webUtils.getPathForFile(file),
+      getAllMusic: () => ipcRenderer.invoke('music:get-all-music')
     });
   } catch (error) {
     console.error(error)

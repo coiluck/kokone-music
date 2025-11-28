@@ -1,9 +1,10 @@
 // src/main/index.js
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, protocol, net } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { setupStoreIPC } from './store.js'
+import { pathToFileURL } from 'url';
 
 function createWindow() {
   // Create the browser window.
@@ -52,6 +53,32 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+
+  protocol.handle('media', (request) => {
+    // 1. 'media://' スキームを取り除く
+    // request.url が 'media:///C:/Users...' の場合、slice後は '/C:/Users...' となる
+    let rawPath = request.url.slice('media://'.length);
+
+    // 2. URLデコード
+    let decodedPath = decodeURIComponent(rawPath);
+
+    // 3. 【重要】Windows対策: パスの先頭が '/' で始まる場合、それを削除する
+    // pathToFileURL は Windows の場合 'C:/Users/...' (先頭スラッシュなし) を期待します
+    if (process.platform === 'win32' && decodedPath.startsWith('/')) {
+      decodedPath = decodedPath.slice(1);
+    }
+
+    try {
+      // 4. Node.jsのURLモジュールで絶対パスを file:// URLへ変換
+      const fileUrl = pathToFileURL(decodedPath).toString();
+
+      // 5. file:// URL を fetch する
+      return net.fetch(fileUrl);
+    } catch (error) {
+      console.error('Media protocol error:', error);
+      return new Response('Not Found', { status: 404 });
+    }
+  });
 
   createWindow()
 
