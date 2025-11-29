@@ -1,0 +1,59 @@
+
+
+
+
+.home-list-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 15px;
+  padding: 8px;
+  border-radius: var(--radius-small);
+  transition: all 0.3s ease;
+}
+.home-list-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.home-list-item-icon-container {
+  height: 80%;
+  aspect-ratio: 1 / 1;
+  padding: 5px;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-small);
+}
+.home-list-item-icon {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-small);
+  mask-image: url('../images/music.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+  opacity: 0.5;
+}
+
+.home-list-item-text {
+  display: flex;
+  flex-direction: column;
+}
+.home-list-item-title {
+  font-size: 0.8rem;
+}
+.home-list-item-info .home-list-item-artist, .home-list-item-info .home-list-item-duration {
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+.home-list-item-actions {
+  position: relative;
+  height: 40%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-small);
+  mask-image: url('../images/ellipsis.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+  opacity: 0.5;
+}

@@ -1,6 +1,6 @@
 // src/main/index.js
 import { app, shell, BrowserWindow, ipcMain, protocol, net } from 'electron'
-import { join } from 'path'
+import { join, extname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { setupStoreIPC } from './store.js'
@@ -38,6 +38,21 @@ function createWindow() {
   }
 }
 
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'media',
+    privileges: {
+      secure: true,
+      supportFetchAPI: true,
+      bypassCSP: true,
+      stream: true // メディアストリーミングに重要
+    }
+  }
+])
+
+
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -54,29 +69,49 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  protocol.handle('media', (request) => {
-    // 1. 'media://' スキームを取り除く
-    // request.url が 'media:///C:/Users...' の場合、slice後は '/C:/Users...' となる
+  protocol.handle('media', async (request) => {
+    // URLのパースロジックをより安全な形に修正
     let rawPath = request.url.slice('media://'.length);
-
-    // 2. URLデコード
     let decodedPath = decodeURIComponent(rawPath);
 
-    // 3. 【重要】Windows対策: パスの先頭が '/' で始まる場合、それを削除する
-    // pathToFileURL は Windows の場合 'C:/Users/...' (先頭スラッシュなし) を期待します
-    if (process.platform === 'win32' && decodedPath.startsWith('/')) {
+    // Windowsのパス調整 (/C:/... -> C:/...)
+    if (process.platform === 'win32' && decodedPath.startsWith('/') && !decodedPath.startsWith('//')) {
       decodedPath = decodedPath.slice(1);
     }
 
     try {
-      // 4. Node.jsのURLモジュールで絶対パスを file:// URLへ変換
       const fileUrl = pathToFileURL(decodedPath).toString();
 
-      // 5. file:// URL を fetch する
-      return net.fetch(fileUrl);
+      // net.fetchでファイルを取得
+      const response = await net.fetch(fileUrl);
+
+      // 【追加 2】: 適切なContent-Typeを設定して新しいResponseを返す
+      if (response.ok) {
+        const ext = extname(decodedPath).toLowerCase();
+        let mimeType = 'application/octet-stream'; // デフォルト
+
+        if (ext === '.mp3') mimeType = 'audio/mpeg';
+        else if (ext === '.wav') mimeType = 'audio/wav';
+        else if (ext === '.ogg') mimeType = 'audio/ogg';
+        else if (ext === '.m4a') mimeType = 'audio/mp4';
+
+        // ヘッダーを再構築（net.fetchのレスポンスヘッダーは読み取り専用の場合があるため）
+        return new Response(response.body, {
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            'Content-Type': mimeType,
+            'Access-Control-Allow-Origin': '*',
+            'Accept-Ranges': 'bytes' // ストリーミング再生（シーク）に必要
+          }
+        });
+      }
+
+      return response;
+
     } catch (error) {
-      console.error('Media protocol error:', error);
-      return new Response('Not Found', { status: 404 });
+      console.error('Media Protocol Error:', error);
+      return new Response('Internal Server Error', { status: 500 });
     }
   });
 

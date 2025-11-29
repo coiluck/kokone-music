@@ -24,11 +24,17 @@ async function scanAllMusic() {
     // デザインに合わせてHTML構造を作成
     // 例: タイトル - アーティスト [時間]
     musicElement.innerHTML = `
-      <div class="music-info">
-        <span class="music-title">${music.title}</span>
-        <span class="music-artist">${music.artist}</span>
+      <div class="home-list-item-icon-container">
+        <div class="home-list-item-icon"></div>
       </div>
-      <span class="music-duration">${secondsToMinutes(music.duration)}</span>
+      <div class="home-list-item-text">
+        <span class="home-list-item-title">${music.title}</span>
+        <div class="home-list-item-info">
+          <span class="home-list-item-artist">${music.artist}</span>
+          <span class="home-list-item-duration">${secondsToMinutes(music.duration)}</span>
+        </div>
+      </div>
+      <div class="home-list-item-actions"></div>
     `;
 
     // クリックイベントリスナー：音楽を再生

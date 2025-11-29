@@ -28,7 +28,7 @@ export async function applySettings() {
       // 保存
       const newValue = e.target.value;
       userColors[key] = newValue;
-      await window.settings.set('colors', currentColors);
+      await window.settings.set('colors', userColors);
     });
   });
   // icon用

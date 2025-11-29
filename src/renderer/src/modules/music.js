@@ -19,14 +19,11 @@ class MusicPlayer {
     };
 
     // 新しいAudioインスタンスを作成
-// Windowsのバックスラッシュをスラッシュに置換
-const cleanPath = filePath.replace(/\\/g, '/');
+    const cleanPath = filePath.replace(/\\/g, '/');
+    const encodedPath = cleanPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+    const fileUrl = 'media:///' + encodedPath;
 
-// プロトコル + スラッシュ3つ (media:///C:/...) で構築
-// これにより index.js 側で受け取る rawPath は '/C:/Users/...' となります
-const fileUrl = 'media:///' + cleanPath;
-
-this.audio = new Audio(fileUrl);
+    this.audio = new Audio(fileUrl);
 
     // 再生開始
     this.audio.play()
