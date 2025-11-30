@@ -1,9 +1,12 @@
 // src/renderer/src/modules/music.js
+import { setupPlayerUi, updatePlayPauseButton } from '../playerUi.js';
+
 class MusicPlayer {
   constructor() {
     this.audio = null;
     this.currentTrack = null;
     this.isPlaying = false;
+    this.repeatMode = 'list-order'; // 'list-order', 'repeat', 'repeat-one', 'shuffle'
   }
 
   play(filePath, trackInfo = {}) {
@@ -18,6 +21,12 @@ class MusicPlayer {
       duration: trackInfo.duration || 0
     };
 
+    setupPlayerUi(
+      this.currentTrack.title,
+      this.currentTrack.artist,
+      secondsToMinutes(this.currentTrack.duration)
+    );
+
     // 新しいAudioインスタンスを作成
     const cleanPath = filePath.replace(/\\/g, '/');
     const encodedPath = cleanPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
@@ -29,6 +38,7 @@ class MusicPlayer {
     this.audio.play()
       .then(() => {
         this.isPlaying = true;
+        updatePlayPauseButton(true);
       })
       .catch(error => {
         console.error("再生エラー:", error);
@@ -85,3 +95,10 @@ class MusicPlayer {
 const musicPlayer = new MusicPlayer();
 
 export { musicPlayer };
+
+export function secondsToMinutes(seconds) {
+  if (!seconds) return '0:00';
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+  return `${min}:${sec.toString().padStart(2, '0')}`;
+}

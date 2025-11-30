@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./assets/css/settings.css" />
     <link rel="stylesheet" href="./assets/css/add-music.css" />
     <link rel="stylesheet" href="./assets/css/home.css" />
+    <link rel="stylesheet" href="./assets/css/player-ui.css" />
     <style>
       @font-face {
         font-family: 'mamelon3.5';
@@ -241,10 +242,44 @@
             <p class="app-dev-info">Developed by KOKONE Project</p>
           </div>
         </div>
+
+        <div id="playerUI-container">
+          <div class="playerUI-main-container">
+            <div class="playerUI-icon"></div>
+            <div class="playerUI-text-conatainer">
+              <div id="playerUI-title">aaa</div>
+              <div id="playerUI-artist">bbb</div>
+            </div>
+            <div class="playerUI-button-container">
+              <div id="playerUI-button-prev"></div>
+              <div class="playerUI-button-play-pause-container">
+                <div id="playerUI-button-pause" class="playerUI-button-play-pause-icon"></div>
+                <div id="playerUI-button-play" class="playerUI-button-play-pause-icon"></div>
+              </div>
+              <div id="playerUI-button-next"></div>
+              <div id="playerUI-button-repeat-settings">
+                <div id="playerUI-button-list-order"></div>
+                <div id="playerUI-button-repeat" style="display: none;"></div>
+                <div id="playerUI-button-repeat-one" style="display: none;"></div>
+                <div id="playerUI-button-shuffle" style="display: none;"></div>
+              </div>
+            </div>
+          </div>
+          <div id="playerUI-duration-container">
+            <div id="playerUI-duration-current">0:00</div>
+            <div class="playerUI-duration-seekbar-container">
+              <div id="playerUI-duration-seekbar-current"></div>
+              <div id="playerUI-duration-seekbar-total"></div>
+            </div>
+            <div id="playerUI-duration-total">1:00</div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <script type="module" src="./src/renderer.js"></script>
     <script type="module" src="./src/settings.js"></script>
+    <script type="module" src="./src/playerUi.js"></script>
   </body>
 </html>

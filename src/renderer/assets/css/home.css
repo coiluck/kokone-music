@@ -37,6 +37,10 @@
 .home-list-item-text {
   display: flex;
   flex-direction: column;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .home-list-item-title {
   font-size: 0.8rem;

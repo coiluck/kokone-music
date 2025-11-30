@@ -1,5 +1,5 @@
 // src/renderer/src/home.js
-import { musicPlayer } from './modules/music.js';
+import { musicPlayer, secondsToMinutes } from './modules/music.js';
 
 export function setupHome() {
   setUpReccomended();
@@ -54,10 +54,4 @@ function playMusic(musicItem) {
     duration: musicItem.duration
   });
   console.log(`Playing: ${musicItem.path}`);
-}
-function secondsToMinutes(seconds) {
-  if (!seconds) return '0:00';
-  const min = Math.floor(seconds / 60);
-  const sec = Math.floor(seconds % 60);
-  return `${min}:${sec.toString().padStart(2, '0')}`;
 }
