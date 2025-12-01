@@ -80,6 +80,7 @@ app.whenReady().then(() => {
         return new Response('Path not found', { status: 400 });
       }
 
+      // ファイルを読み込む
       const data = await readFile(decodedPath);
 
       const ext = extname(decodedPath).toLowerCase();
@@ -90,16 +91,41 @@ app.whenReady().then(() => {
       else if (ext === '.ogg') mimeType = 'audio/ogg';
       else if (ext === '.m4a') mimeType = 'audio/mp4';
 
-      return new Response(data, {
-        status: 200,
-        headers: {
-          'Content-Type': mimeType,
-          'Access-Control-Allow-Origin': '*',
-          'Accept-Ranges': 'bytes',
-          'Content-Length': data.length
-        }
-      });
+      const range = request.headers.get('Range');
 
+      if (range) {
+        // Rangeヘッダーがある場合 (例: bytes=32768-)
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        // endが指定されていない場合はファイルの最後とする
+        const end = parts[1] ? parseInt(parts[1], 10) : data.length - 1;
+
+        // 要求された範囲のデータを切り出す
+        const chunksize = (end - start) + 1;
+        const chunk = data.subarray(start, end + 1);
+
+        return new Response(chunk, {
+          status: 206,
+          headers: {
+            'Content-Type': mimeType,
+            'Access-Control-Allow-Origin': '*',
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunksize,
+            'Content-Range': `bytes ${start}-${end}/${data.length}`
+          }
+        });
+      } else {
+        // Rangeヘッダーがない場合 (初回読み込みなど)
+        return new Response(data, {
+          status: 200,
+          headers: {
+            'Content-Type': mimeType,
+            'Access-Control-Allow-Origin': '*',
+            'Accept-Ranges': 'bytes',
+            'Content-Length': data.length
+          }
+        });
+      }
     } catch (error) {
       console.error('Media Protocol Error:', error);
       return new Response('Not Found', { status: 404 });
