@@ -1,34 +1,44 @@
 // src/preload/preload.js
-import { contextBridge, ipcRenderer, webUtils } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer, webUtils } from 'electron';
 
-// Custom APIs for renderer
-const api = {}
+contextBridge.exposeInMainWorld('music', {
+  // 音楽ファイルデータ
+  getPath: () => ipcRenderer.invoke('music:get-path'),
+  getFilePath: (file) => webUtils.getPathForFile(file),
+  saveFiles: (filePaths) => ipcRenderer.invoke('music:save-files', filePaths),
+  getAllMusic: () => ipcRenderer.invoke('music:get-all-music'),
+  
+  // メタデータ
+  updateMetadata: (trackId, newMetadata) => 
+    ipcRenderer.invoke('music:update-metadata', trackId, newMetadata),
+  updateFilename: (trackId, newFileName) => 
+    ipcRenderer.invoke('music:update-filename', trackId, newFileName),
+  
+  // タグ
+  addTag: (trackId, tag) => 
+    ipcRenderer.invoke('music:add-tag', trackId, tag),
+  removeTag: (trackId, tag) => 
+    ipcRenderer.invoke('music:remove-tag', trackId, tag),
+  filterByTags: (options) => 
+    ipcRenderer.invoke('music:filter-by-tags', options),
+  
+  // 履歴
+  addHistory: (trackId) => 
+    ipcRenderer.invoke('music:add-history', trackId),
+  getHistory: () => 
+    ipcRenderer.invoke('music:get-history'),
+});
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
-if (process.contextIsolated) {
-  try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
-    // dataの読み書き
-    contextBridge.exposeInMainWorld('settings', {
-      get: (key) => ipcRenderer.invoke('settings:get', key),
-      set: (key, value) => ipcRenderer.invoke('settings:set', key, value)
-    });
-    // 曲ファイルの保存
-    contextBridge.exposeInMainWorld('music', {
-      saveFiles: (filePaths) => ipcRenderer.invoke('music:save-files', filePaths),
-      getPath: (file) => webUtils.getPathForFile(file),
-      getAllMusic: () => ipcRenderer.invoke('music:get-all-music')
-    });
-  } catch (error) {
-    console.error(error)
-  }
-} else {
-  // @ts-ignore (define in dts)
-  window.electron = electronAPI
-  // @ts-ignore (define in dts)
-  window.api = api
-}
+contextBridge.exposeInMainWorld('playlist', {
+  create: (name) => ipcRenderer.invoke('playlist:create', name),
+  addTrack: (playlistId, trackId) => 
+    ipcRenderer.invoke('playlist:add-track', playlistId, trackId),
+  removeTrack: (playlistId, trackId) => 
+    ipcRenderer.invoke('playlist:remove-track', playlistId, trackId),
+  getAll: () => ipcRenderer.invoke('playlist:get-all'),
+});
+
+contextBridge.exposeInMainWorld('settings', {
+  get: (key) => ipcRenderer.invoke('settings:get', key),
+  set: (key, value) => ipcRenderer.invoke('settings:set', key, value),
+});

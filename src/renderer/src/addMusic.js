@@ -37,6 +37,9 @@ export function setupAddMusic() {
   });
 }
 
+// 追加したら反映するためのもの
+import { setupHome } from './home.js'
+
 async function handleFiles(files) {
   if (!files || files.length === 0) return;
 
@@ -55,7 +58,7 @@ async function handleFiles(files) {
   }
 
   const filePaths = mp3Files.map(file => {
-    return window.music.getPath(file);
+    return window.music.getFilePath(file);
   });
 
   try {
@@ -63,8 +66,8 @@ async function handleFiles(files) {
 
     // 結果の集計
     const successItems = results.filter(r => r.success);
-    const existItems = results.filter(r => !r.success && r.status === 'exists');
-    const errorItems = results.filter(r => !r.success && r.status !== 'exists');
+    const existItems = results.filter(r => !r.success && r.status === 'duplicate');
+    const errorItems = results.filter(r => !r.success && r.status !== 'duplicate');
 
     let message = '';
 
@@ -95,7 +98,8 @@ async function handleFiles(files) {
     }
 
     alert(message);
-
+    // DOM更新
+    setupHome();
   } catch (error) {
     console.error('詳細なエラー:', error);
     alert('ファイルの保存に失敗しました。');
