@@ -47,7 +47,8 @@ protocol.registerSchemesAsPrivileged([
       secure: true,
       supportFetchAPI: true,
       bypassCSP: true,
-      stream: true // メディアストリーミングに重要
+      stream: true,
+      standard: true
     }
   }
 ])
@@ -71,16 +72,14 @@ app.whenReady().then(() => {
   })
 
   protocol.handle('media', async (request) => {
-    // URLのパース
-    let rawPath = request.url.slice('media://'.length);
-    let decodedPath = decodeURIComponent(rawPath);
-
-    // Windowsのパス調整 (/C:/... -> C:/...)
-    if (process.platform === 'win32' && decodedPath.startsWith('/') && !decodedPath.startsWith('//')) {
-      decodedPath = decodedPath.slice(1);
-    }
-
     try {
+      const urlObj = new URL(request.url);
+      const decodedPath = urlObj.searchParams.get('path');
+
+      if (!decodedPath) {
+        return new Response('Path not found', { status: 400 });
+      }
+
       const data = await readFile(decodedPath);
 
       const ext = extname(decodedPath).toLowerCase();

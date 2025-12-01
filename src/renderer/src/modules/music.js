@@ -29,9 +29,7 @@ class MusicPlayer {
     );
 
     // 新しいAudioインスタンスを作成
-    const cleanPath = filePath.replace(/\\/g, '/');
-    const encodedPath = cleanPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
-    const fileUrl = 'media:///' + encodedPath;
+    const fileUrl = `media://play?path=${encodeURIComponent(filePath)}`;
 
     this.audio = new Audio(fileUrl);
 
@@ -158,18 +156,21 @@ class MusicPlayer {
   }
 
   error(e) {
-    const error = e;
-    console.error('[MusicPlayer] Error occurred:', {
-      code: error?.code,
-      message: error?.message,
-    });
+    const errorObj = this.audio ? this.audio.error : null;
+    const errorCode = errorObj ? errorObj.code : 'unknown';
+    const errorMessage = errorObj ? errorObj.message : 'An unknown error occurred';
 
+    console.error('[MusicPlayer] Error occurred:', {
+      code: errorCode,
+      message: errorMessage,
+      rawEvent: e
+    });
     this.isPlaying = false;
     updatePlayPauseButton(false);
     this.stopTimeUpdate();
 
     const shouldReload = confirm(
-      `再生エラーが発生しました。\n(Code: ${error?.code} - ${error?.message})\n\nアプリを再読み込みして復帰しますか？`
+      `再生エラーが発生しました。\n(Code: ${e?.code} - ${e?.message})\n\nアプリを再読み込みして復帰しますか？`
     );
     if (shouldReload) {
       window.location.reload();

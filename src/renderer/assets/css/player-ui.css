@@ -119,6 +119,7 @@
 }
 
 #playerUI-button-repeat-settings > div {
+  position: relative;
   width: 20px;
   height: 20px;
   mask-size: contain;

@@ -72,7 +72,7 @@ function cycleRepeatMode() {
     'repeat-one': '終了したら停止',
     'shuffle': 'シャッフル再生'
   };
-  console.log(messages[musicPlayer.repeatMode]);
+  // console.log(messages[musicPlayer.repeatMode]); tooltipをつけたので不要
 
   updateRepeatButton(musicPlayer.repeatMode);
   return musicPlayer.repeatMode;
@@ -93,3 +93,10 @@ document.addEventListener('keydown', (event) => {
     }
   }
 });
+
+import { addTooltipEvents } from './modules/addToolTip.js';
+
+addTooltipEvents(document.getElementById('playerUI-button-list-order'), 'リスト順で再生');
+addTooltipEvents(document.getElementById('playerUI-button-repeat'), 'この曲をリピート');
+addTooltipEvents(document.getElementById('playerUI-button-repeat-one'), '終了したら停止');
+addTooltipEvents(document.getElementById('playerUI-button-shuffle'), 'シャッフル再生');

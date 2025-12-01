@@ -1,0 +1,31 @@
+#tooltip-container {
+  display: none;
+  position: fixed;
+  background-color: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.6rem;
+  max-width: 300px;
+  text-align: left;
+  pointer-events: none;
+  z-index: 1001;
+  opacity: 0.8;
+  /* 吹き出しのしっぽ */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+}
+#tooltip-container.below {
+  &::after {
+    top: -10px;
+    border-color: transparent transparent #333 transparent;
+  }
+}
