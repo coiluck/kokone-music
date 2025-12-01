@@ -4,7 +4,8 @@ import { join, extname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { setupStoreIPC } from './store.js'
-import { pathToFileURL } from 'url';
+// import { pathToFileURL } from 'url';
+import { readFile } from 'fs/promises'
 
 function createWindow() {
   // Create the browser window.
@@ -70,7 +71,7 @@ app.whenReady().then(() => {
   })
 
   protocol.handle('media', async (request) => {
-    // URLのパースロジックをより安全な形に修正
+    // URLのパース
     let rawPath = request.url.slice('media://'.length);
     let decodedPath = decodeURIComponent(rawPath);
 
@@ -80,38 +81,29 @@ app.whenReady().then(() => {
     }
 
     try {
-      const fileUrl = pathToFileURL(decodedPath).toString();
+      const data = await readFile(decodedPath);
 
-      // net.fetchでファイルを取得
-      const response = await net.fetch(fileUrl);
+      const ext = extname(decodedPath).toLowerCase();
+      let mimeType = 'application/octet-stream';
 
-      // 【追加 2】: 適切なContent-Typeを設定して新しいResponseを返す
-      if (response.ok) {
-        const ext = extname(decodedPath).toLowerCase();
-        let mimeType = 'application/octet-stream'; // デフォルト
+      if (ext === '.mp3') mimeType = 'audio/mpeg';
+      else if (ext === '.wav') mimeType = 'audio/wav';
+      else if (ext === '.ogg') mimeType = 'audio/ogg';
+      else if (ext === '.m4a') mimeType = 'audio/mp4';
 
-        if (ext === '.mp3') mimeType = 'audio/mpeg';
-        else if (ext === '.wav') mimeType = 'audio/wav';
-        else if (ext === '.ogg') mimeType = 'audio/ogg';
-        else if (ext === '.m4a') mimeType = 'audio/mp4';
-
-        // ヘッダーを再構築（net.fetchのレスポンスヘッダーは読み取り専用の場合があるため）
-        return new Response(response.body, {
-          status: 200,
-          statusText: 'OK',
-          headers: {
-            'Content-Type': mimeType,
-            'Access-Control-Allow-Origin': '*',
-            'Accept-Ranges': 'bytes' // ストリーミング再生（シーク）に必要
-          }
-        });
-      }
-
-      return response;
+      return new Response(data, {
+        status: 200,
+        headers: {
+          'Content-Type': mimeType,
+          'Access-Control-Allow-Origin': '*',
+          'Accept-Ranges': 'bytes',
+          'Content-Length': data.length
+        }
+      });
 
     } catch (error) {
       console.error('Media Protocol Error:', error);
-      return new Response('Internal Server Error', { status: 500 });
+      return new Response('Not Found', { status: 404 });
     }
   });
 
