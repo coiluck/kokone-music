@@ -161,19 +161,18 @@ async function setUpReccomended() {
   }
 }
 
+import { showActionMenu } from './modules/actionMusic.js'
+
 async function scanAllMusic() {
   const allMusic = await window.music.getAllMusic();
 
   const homeContainer = document.getElementById('home-all-music');
-  // リストをクリアしてから追加（重複防止）
   homeContainer.innerHTML = '';
 
   for (const music of allMusic) {
     const musicElement = document.createElement('div');
     musicElement.classList.add('home-list-item');
 
-    // デザインに合わせてHTML構造を作成
-    // 例: タイトル - アーティスト [時間]
     musicElement.innerHTML = `
       <div class="home-list-item-icon-container">
         <div class="home-list-item-icon"></div>
@@ -188,9 +187,13 @@ async function scanAllMusic() {
       <div class="home-list-item-actions"></div>
     `;
 
-    // クリックイベントリスナー：音楽を再生
     musicElement.addEventListener('click', () => {
       playMusic(music);
+    });
+
+    musicElement.querySelector('.home-list-item-actions').addEventListener('click', (e) => {
+      e.stopPropagation(); 
+      showActionMenu(e, music);
     });
 
     homeContainer.appendChild(musicElement);

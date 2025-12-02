@@ -3,6 +3,7 @@ import { changeModal } from './modules/changeModal.js';
 import { applySettings } from './settings.js'
 import { setupAddMusic } from './addMusic.js'
 import { setupHome } from './home.js'
+import { closeActionMenu } from './modules/actionMusic.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   // 初期modal
@@ -22,4 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAddMusic();
   // home
   setupHome();
+});
+
+// 曲の編集・削除用
+document.addEventListener('click', (e) => {
+  closeActionMenu();
 });

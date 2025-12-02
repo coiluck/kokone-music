@@ -198,7 +198,7 @@ export function setupStoreIPC() {
             fileHash: fileHash,
             fileName: path.basename(newDestPath),
             metadata: {
-              title: metadata.common.title || path.basename(newDestPath),
+              title: metadata.common.title || path.parse(newDestPath).name,
               artist: metadata.common.artist || 'Unknown Artist',
               duration: metadata.format.duration || 0
             },
@@ -221,7 +221,7 @@ export function setupStoreIPC() {
           fileHash: fileHash,
           fileName: fileName,
           metadata: {
-            title: metadata.common.title || fileName,
+            title: metadata.common.title || path.parse(fileName).name,
             artist: metadata.common.artist || 'Unknown Artist',
             duration: metadata.format.duration || 0
           },

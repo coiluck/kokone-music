@@ -1,0 +1,49 @@
+.action-menu {
+  position: absolute;
+  background-color: var(--bg-mild);
+  border: 1px solid var(--text);
+  border-radius: var(--radius-small);
+  z-index: 1000;
+  overflow: hidden;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease-out;
+}
+.action-menu-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.action-menu-item:hover {
+  background-color: var(--bg-hover);
+}
+.action-menu-item.delete:hover {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.action-music-icon {
+  width: .9rem;
+  height: .9rem;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+}
+.action-music-icon#action-music-edit-icon {
+  mask-image: url(../images/music-actions/pen.svg);
+}
+.action-music-icon#action-music-delete-icon {
+  mask-image: url(../images/music-actions/trashcan.svg);
+}
+.action-menu-item span {
+  font-size: .8rem;
+}
