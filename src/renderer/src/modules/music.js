@@ -16,6 +16,7 @@ class MusicPlayer {
 
     // 新しい曲情報を保存
     this.currentTrack = {
+      id: trackInfo.id,
       path: filePath,
       title: trackInfo.title || 'Unknown',
       artist: trackInfo.artist || 'Unknown',
@@ -30,7 +31,6 @@ class MusicPlayer {
 
     // 新しいAudioインスタンスを作成
     const fileUrl = `media://play?path=${encodeURIComponent(filePath)}`;
-
     this.audio = new Audio(fileUrl);
 
     // エラー
@@ -44,6 +44,8 @@ class MusicPlayer {
         this.isPlaying = true;
         updatePlayPauseButton(true);
         this.startTimeUpdate();
+        // 再生履歴を保存
+        window.music.addHistory(this.currentTrack.id);
       })
       .catch(error => {
         this.error(error)

@@ -1,4 +1,69 @@
+#home-recommended {
+  display: flex;
+  gap: 15px;
+  position: relative;
+  padding: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text) var(--bg);
+}
 
+.home-recommended-item {
+  flex: 0 0 120px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-mild);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.home-recommended-item:hover {
+  transform: scale(1.03);
+}
+
+.home-recommended-item-icon-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-mild);
+  position: relative;
+}
+.home-recommended-item-icon {
+  width: 50%;
+  height: 50%;
+  background-color: var(--text);
+  mask-image: url('../images/music.svg');
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  opacity: 0.5;
+}
+
+.home-recommended-item-text {
+  padding: 8px;
+  background: var(--bg-hover);
+  color: var(--text);
+}
+.home-recommended-item-title {
+  display: block;
+  font-weight: bold;
+  font-size: .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.home-recommended-item-info {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text);
+  font-size: .6rem;
+  opacity: 0.8;
+}
 
 
 

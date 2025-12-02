@@ -56,14 +56,14 @@ async function generateFileHash(filePath) {
   try {
     const metadata = await mm.parseFile(filePath);
     const fileBuffer = await readFile(filePath);
-    
+
     // ID3タグなどのメタデータ領域を除外
     const format = metadata.format;
     const tagSize = format.tagTypes?.length > 0 ? estimateTagSize(fileBuffer) : 0;
-    
+
     // 音声データ部分のみを抽出
     const audioData = fileBuffer.slice(tagSize);
-    
+
     // ハッシュ生成
     const hash = createHash('sha256');
     hash.update(audioData);
@@ -128,10 +128,10 @@ export function setupStoreIPC() {
 
         // ファイルハッシュを生成
         const fileHash = await generateFileHash(srcPath);
-        
+
         // 既存のトラックを検索
         let existingTrack = findTrackByHash(fileHash);
-        
+
         if (existingTrack) {
           // 同じ音声データが既に存在
           results.push({
@@ -150,14 +150,14 @@ export function setupStoreIPC() {
           const baseName = path.basename(fileName, ext);
           let counter = 1;
           let newDestPath = destPath;
-          
+
           while (fs.existsSync(newDestPath)) {
             newDestPath = path.join(musicDir, `${baseName}_${counter}${ext}`);
             counter++;
           }
-          
+
           await fs.promises.copyFile(srcPath, newDestPath);
-          
+
           // メタデータを取得してトラックを作成
           const metadata = await mm.parseFile(newDestPath);
           const trackId = uuidv4();
@@ -173,14 +173,14 @@ export function setupStoreIPC() {
             tags: [],
             addedAt: Date.now()
           };
-          
+
           saveTrack(trackData);
           results.push({ success: true, file: fileName, trackId: trackId });
           continue;
         }
 
         await fs.promises.copyFile(srcPath, destPath);
-        
+
         // メタデータを取得してトラックを作成
         const metadata = await mm.parseFile(destPath);
         const trackId = uuidv4();
@@ -196,7 +196,7 @@ export function setupStoreIPC() {
           tags: [],
           addedAt: Date.now()
         };
-        
+
         saveTrack(trackData);
         results.push({ success: true, file: fileName, trackId: trackId });
       } catch (error) {
@@ -211,10 +211,10 @@ export function setupStoreIPC() {
     try {
       const allTracks = tracksStore.store || {};
       const trackList = [];
-      
+
       for (const track of Object.values(allTracks)) {
         const filePath = path.join(musicDir, track.fileName);
-        
+
         // ファイルが存在するか確認
         if (fs.existsSync(filePath)) {
           trackList.push({
@@ -229,7 +229,7 @@ export function setupStoreIPC() {
           });
         }
       }
-      
+
       return trackList;
     } catch (error) {
       console.error('Error getting music list:', error);
@@ -244,11 +244,11 @@ export function setupStoreIPC() {
       if (!track) {
         return { success: false, error: 'Track not found' };
       }
-      
+
       // メタデータを更新
       track.metadata = { ...track.metadata, ...newMetadata };
       saveTrack(track);
-      
+
       return { success: true, track };
     } catch (error) {
       return { success: false, error: error.message };
@@ -262,18 +262,18 @@ export function setupStoreIPC() {
       if (!track) {
         return { success: false, error: 'Track not found' };
       }
-      
+
       const oldPath = path.join(musicDir, track.fileName);
       const newPath = path.join(musicDir, newFileName);
-      
+
       if (fs.existsSync(newPath)) {
         return { success: false, error: 'File name already exists' };
       }
-      
+
       await fs.promises.rename(oldPath, newPath);
       track.fileName = newFileName;
       saveTrack(track);
-      
+
       return { success: true, track };
     } catch (error) {
       return { success: false, error: error.message };
@@ -287,16 +287,16 @@ export function setupStoreIPC() {
       if (!track) {
         return { success: false, error: 'Track not found' };
       }
-      
+
       if (!track.tags) {
         track.tags = [];
       }
-      
+
       if (!track.tags.includes(tag)) {
         track.tags.push(tag);
         saveTrack(track);
       }
-      
+
       return { success: true, track };
     } catch (error) {
       return { success: false, error: error.message };
@@ -310,12 +310,12 @@ export function setupStoreIPC() {
       if (!track) {
         return { success: false, error: 'Track not found' };
       }
-      
+
       if (track.tags) {
         track.tags = track.tags.filter(t => t !== tag);
         saveTrack(track);
       }
-      
+
       return { success: true, track };
     } catch (error) {
       return { success: false, error: error.message };
@@ -327,10 +327,10 @@ export function setupStoreIPC() {
     try {
       const { tags = [], excludeTags = [], requirement = 'AND' } = options;
       const allTracks = tracksStore.store || {};
-    
+
       const filtered = Object.values(allTracks).filter(track => {
         const trackTags = track.tags || [];
- 
+
         if (excludeTags.length > 0 && excludeTags.some(tag => trackTags.includes(tag))) {
           return false;
         }
@@ -371,16 +371,16 @@ export function setupStoreIPC() {
     try {
       const history = historyStore.get('playHistory') || [];
       const now = Date.now();
-      
+
       history.push({
         trackId: trackId,
         playedAt: now
       });
-      
+
       // 30日以前の履歴を削除
       const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
       const recentHistory = history.filter(h => h.playedAt >= thirtyDaysAgo);
-      
+
       historyStore.set('playHistory', recentHistory);
       return { success: true };
     } catch (error) {
@@ -389,13 +389,13 @@ export function setupStoreIPC() {
   });
 
   // 再生履歴を取得
-  ipcMain.handle('music:get-history', () => {
+  ipcMain.handle('music:get-history', (_event, days) => {
     try {
       const history = historyStore.get('playHistory') || [];
       const now = Date.now();
-      const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
-      
-      return history.filter(h => h.playedAt >= thirtyDaysAgo);
+      const daysAgo = now - (days * 24 * 60 * 60 * 1000);
+
+      return history.filter(h => h.playedAt >= daysAgo);
     } catch (error) {
       console.error('Error getting history:', error);
       return [];
@@ -412,7 +412,7 @@ export function setupStoreIPC() {
         trackIds: [],
         createdAt: Date.now()
       };
-      
+
       playlistsStore.set(playlistId, playlist);
       return { success: true, playlist };
     } catch (error) {
@@ -427,12 +427,12 @@ export function setupStoreIPC() {
       if (!playlist) {
         return { success: false, error: 'Playlist not found' };
       }
-      
+
       if (!playlist.trackIds.includes(trackId)) {
         playlist.trackIds.push(trackId);
         playlistsStore.set(playlistId, playlist);
       }
-      
+
       return { success: true, playlist };
     } catch (error) {
       return { success: false, error: error.message };
@@ -446,10 +446,10 @@ export function setupStoreIPC() {
       if (!playlist) {
         return { success: false, error: 'Playlist not found' };
       }
-      
+
       playlist.trackIds = playlist.trackIds.filter(id => id !== trackId);
       playlistsStore.set(playlistId, playlist);
-      
+
       return { success: true, playlist };
     } catch (error) {
       return { success: false, error: error.message };
