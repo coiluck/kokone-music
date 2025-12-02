@@ -42,3 +42,7 @@ contextBridge.exposeInMainWorld('settings', {
   get: (key) => ipcRenderer.invoke('settings:get', key),
   set: (key, value) => ipcRenderer.invoke('settings:set', key, value),
 });
+
+contextBridge.exposeInMainWorld('openUserDataFolder', {
+  open: () => ipcRenderer.invoke('open-userdata-folder')
+});

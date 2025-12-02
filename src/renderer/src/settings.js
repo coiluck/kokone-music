@@ -35,7 +35,20 @@ export async function applySettings() {
   const userIconStyle = await getStoreIconStyle();
   applyIconStyle(userIconStyle);
   document.querySelector(`input[name="icon-style"][value="${userIconStyle}"]`).checked = true;
-  // 下の関数を集めておく
+  // window size用
+  const userWindowSize = await getStoreWindowSize();
+  if (userWindowSize.isNeedRememberWindowSize) {
+    document.getElementById('setting-is-need-remember-window-size').checked = true;
+  }
+  // reccomended用
+  const userReccomended = await getStoreReccomended();
+  applyReccomended(userReccomended);
+  // normalize music volume用
+  const userNormalizeMusicVolume = await getStoreNormalizeMusicVolume();
+  applyNormalizeMusicVolume(userNormalizeMusicVolume);
+  // music volume用
+  const userMusicVolume = await getStoreMusicVolume();
+  applyMusicVolume(userMusicVolume);
 }
 
 // 初期値
@@ -177,4 +190,62 @@ document.querySelectorAll('input[name="icon-style"]').forEach((radio) => {
   radio.addEventListener('change', (e) => {
     applyIconStyle(e.target.value);
   });
+});
+
+// window size
+async function getStoreWindowSize() {
+  const windowSize = await window.settings.get('window-size');
+  return windowSize;
+}
+
+// reccomended
+async function getStoreReccomended() {
+  const reccomended = await window.settings.get('reccomended');
+  return reccomended;
+}
+function applyReccomended(userReccomended) {
+  document.getElementById('setting-is-need-recommend').checked = userReccomended.isNeedRecommend;
+  document.getElementById('setting-recent-select').value = userReccomended.recommendDays;
+}
+document.getElementById('setting-is-need-recommend').addEventListener('change', (e) => {
+  window.settings.set('reccomended', {
+    isNeedRecommend: e.target.checked,
+    recommendDays: document.getElementById('setting-recent-select').value
+  });
+});
+document.getElementById('setting-recent-select').addEventListener('change', (e) => {
+  window.settings.set('reccomended', {
+    isNeedRecommend: document.getElementById('setting-is-need-recommend').checked,
+    recommendDays: e.target.value
+  });
+});
+
+// normalize music volume
+async function getStoreNormalizeMusicVolume() {
+  const normalizeMusicVolume = await window.settings.get('normalize-music-volume');
+  return normalizeMusicVolume;
+}
+function applyNormalizeMusicVolume(normalizeMusicVolume) {
+  document.getElementById('setting-normalize-music-volume').checked = normalizeMusicVolume;
+}
+document.getElementById('setting-normalize-music-volume').addEventListener('change', (e) => {
+  window.settings.set('normalize-music-volume', e.target.checked);
+});
+// music volume
+async function getStoreMusicVolume() {
+  const musicVolume = await window.settings.get('music-volume');
+  return musicVolume;
+}
+function applyMusicVolume(musicVolume) {
+  document.getElementById('setting-volume').value = musicVolume;
+  document.getElementById('setting-volume-value').textContent = musicVolume + '%';
+}
+document.getElementById('setting-volume').addEventListener('change', (e) => {
+  window.settings.set('music-volume', e.target.value);
+  document.getElementById('setting-volume-value').textContent = e.target.value + '%';
+});
+
+// open userdata folder
+document.getElementById('setting-export').addEventListener('click', () => {
+  window.openUserDataFolder.open();
 });

@@ -78,6 +78,56 @@ select.setting-select option {
   color: var(--text);
   text-align: center;
 }
+/* range control */
+.setting-range-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  max-width: 150px;
+}
+.setting-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-hover);
+  outline: none;
+  cursor: pointer;
+}
+.setting-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.setting-range-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.setting-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.setting-range-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+.setting-range-value {
+  font-size: .7rem;
+  opacity: .6;
+  min-width: 35px;
+  text-align: right;
+}
 
 
 section.setting-section {
@@ -175,6 +225,14 @@ section.setting-section .setting-item {
 }
 #setting-reset:active {
   transform: scale(0.95);
+}
+#setting-export {
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#setting-export:hover {
+  color: var(--accent)
 }
 #app-call {
   text-decoration: underline;

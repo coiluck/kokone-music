@@ -18,9 +18,13 @@ async function setUpReccomended() {
     // データが足りないので非表示
     document.getElementById('home-recommended-title').style.display = 'none';
     document.getElementById('home-recommended').style.display = 'none';
+    return;
   } else if (0 > 1) {
     // おすすめを表示しない設定の場合
     // 今はこの判定に一致することはない
+    document.getElementById('home-recommended-title').style.display = 'none';
+    document.getElementById('home-recommended').style.display = 'none';
+    return;
   } else {
     document.getElementById('home-recommended-title').style.display = 'block';
     document.getElementById('home-recommended').style.display = 'flex';

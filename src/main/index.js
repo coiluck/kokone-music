@@ -3,15 +3,21 @@ import { app, shell, BrowserWindow, ipcMain, protocol, net } from 'electron'
 import { join, extname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { setupStoreIPC } from './store.js'
-// import { pathToFileURL } from 'url';
+import store, { setupStoreIPC } from './store.js'
 import { readFile } from 'fs/promises'
+const path = require('path');
+const fs = require('fs');
 
 function createWindow() {
-  // Create the browser window.
+  const windowSettings = store.get('window-size');
+  const shouldRemember = windowSettings && windowSettings.isNeedRememberWindowSize;
+
+  const initWidth = (shouldRemember && windowSettings.width) ? windowSettings.width : 800;
+  const initHeight = (shouldRemember && windowSettings.height) ? windowSettings.height : 500;
+
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 500,
+    width: initWidth,
+    height: initHeight,
     show: false,
     autoHideMenuBar: true,
     icon: icon,
@@ -25,10 +31,42 @@ function createWindow() {
     mainWindow.show()
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url)
     return { action: 'deny' }
   })
+
+  mainWindow.on('close', async (e) => {
+    e.preventDefault(); // 一旦閉じるのをキャンセル
+    try {
+      // DOMの状態を確認
+      const isChecked = await mainWindow.webContents.executeJavaScript(`
+        (function() {
+          const el = document.getElementById('setting-is-need-remember-window-size');
+          return el ? el.checked : false;
+        })()
+      `).catch(() => false);
+
+      const currentBounds = mainWindow.getBounds();
+      const currentSettings = store.get('window-size') || {};
+
+      // 保存するオブジェクトを作成
+      const newSettings = {
+        isNeedRememberWindowSize: isChecked,
+        width: isChecked ? currentBounds.width : (currentSettings.width || 800),
+        height: isChecked ? currentBounds.height : (currentSettings.height || 500)
+      };
+
+      store.set('window-size', newSettings);
+
+    } catch (err) {
+      console.error('Error saving window settings:', err);
+    } finally {
+      // 処理が終わったらウィンドウを閉じる
+      mainWindow.removeAllListeners('close');
+      mainWindow.close();
+    }
+  });
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -63,6 +101,16 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
   setupStoreIPC()
+
+  ipcMain.handle('open-userdata-folder', async () => {
+    const musicFolderPath = path.join(app.getPath('userData'), 'music'); // AppData/Roaming/kokone-music/music
+    if (!fs.existsSync(musicFolderPath)) {
+      fs.mkdirSync(musicFolderPath);
+    }
+    const result = await shell.openPath(musicFolderPath);
+    return result;
+  });
+
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

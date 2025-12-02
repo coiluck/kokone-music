@@ -194,7 +194,7 @@
               <div class="setting-item">
                 <span>ウィンドウサイズを記憶</span>
                 <label class="switch">
-                  <input type="checkbox">
+                  <input type="checkbox" id="setting-is-need-remember-window-size">
                   <span class="slider"></span>
                 </label>
               </div>
@@ -204,7 +204,7 @@
               <div class="setting-item">
                 <span>おすすめの曲を表示</span>
                 <label class="switch">
-                  <input type="checkbox">
+                  <input type="checkbox" id="setting-is-need-recommend">
                   <span class="slider"></span>
                 </label>
               </div>
@@ -219,9 +219,23 @@
               <div class="setting-item">
                 <span>曲の音量を正規化</span>
                 <label class="switch">
-                  <input type="checkbox">
+                  <input type="checkbox" id="setting-normalize-music-volume">
                   <span class="slider"></span>
                 </label>
+              </div>
+              <div class="setting-item">
+                <span>再生音量</span>
+                <div class="setting-range-control">
+                  <input
+                    type="range"
+                    class="setting-range-slider"
+                    id="setting-volume"
+                    min="0"
+                    max="200"
+                    value="100"
+                  >
+                  <span class="setting-range-value" id="setting-volume-value">100%</span>
+                </div>
               </div>
             </section>
             <div class="modal-sub-title">ストレージ</div>
@@ -239,7 +253,7 @@
               </div>
               <div class="setting-item">
                 <span>ご要望・お問い合わせ</span>
-                <span id="app-call">こちらから</span>
+                <a id="app-call" href="https://docs.google.com/forms/d/e/1FAIpQLScwgyL_yg2BX8pFy2hG8vHjDTWzr2R-TAtf6gtMpljE9fYvMQ/viewform?usp=header" target="_blank">こちらから</a>
               </div>
             </section>
             <p class="app-dev-info">Developed by KOKONE Project</p>

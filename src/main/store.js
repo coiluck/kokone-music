@@ -29,6 +29,38 @@ const settingsSchema = {
   'icon-style': {
     type: 'string',
     default: 'fill'
+  },
+  'window-size': {
+    type: 'object',
+    default: {
+      isNeedRememberWindowSize: false,
+      width: 800,
+      height: 500,
+    },
+    properties: {
+      isNeedRememberWindowSize: { type: 'boolean' },
+      width: { type: 'number' },
+      height: { type: 'number' }
+    }
+  },
+  'reccomended': {
+    type: 'object',
+    default: {
+      isNeedRecommend: true,
+      recommendDays: 7
+    },
+    properties: {
+      isNeedRecommend: { type: 'boolean' },
+      recommendDays: { type: 'number' }
+    }
+  },
+  'normalize-music-volume': {
+    type: 'boolean',
+    default: true
+  },
+  'music-volume': {
+    type: 'number',
+    default: 100
   }
 };
 
@@ -388,14 +420,11 @@ export function setupStoreIPC() {
     }
   });
 
-  // 再生履歴を取得
-  ipcMain.handle('music:get-history', (_event, days) => {
+  // 全期間の再生履歴を取得
+  ipcMain.handle('music:get-history', (_event) => {
     try {
       const history = historyStore.get('playHistory') || [];
-      const now = Date.now();
-      const daysAgo = now - (days * 24 * 60 * 60 * 1000);
-
-      return history.filter(h => h.playedAt >= daysAgo);
+      return history;
     } catch (error) {
       console.error('Error getting history:', error);
       return [];
