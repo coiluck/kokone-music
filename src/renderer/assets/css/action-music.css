@@ -47,3 +47,100 @@
 .action-menu-item span {
   font-size: .8rem;
 }
+
+/* edit modal */
+#edit-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  backdrop-filter: blur(8px);
+}
+
+.edit-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  width: 80%;
+  height: 80%;
+  padding: 20px;
+  background: var(--bg-mild);
+  border-radius: var(--radius-small);
+}
+
+.edit-title {
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--accent);
+}
+.edit-title::before {
+  content: '#';
+  color: var(--accent);
+  padding-right: .2rem;
+}
+
+
+.edit-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.edit-form-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-form-item label {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: var(--bg);
+  border: 1px solid var(--bg-hover);
+  border-radius: var(--radius-small);
+  color: var(--text);
+  font-size: 0.8rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+.edit-input:focus {
+  border-color: var(--accent);
+}
+.edit-input::placeholder {
+  color: var(--text);
+  opacity: .5;
+}
+
+.edit-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.edit-buttons .edit-btn {
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  padding: 8px 10px;
+  font-size: .9rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-small);
+} 
+.edit-buttons .edit-btn.cancel {
+  background-color: var(--bg-hover);
+} 
+.edit-buttons .edit-btn.save {
+  background-color: var(--accent);
+}

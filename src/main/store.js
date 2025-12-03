@@ -298,12 +298,20 @@ export function setupStoreIPC() {
       const oldPath = path.join(musicDir, track.fileName);
       const newPath = path.join(musicDir, newFileName);
 
-      if (fs.existsSync(newPath)) {
+      // 変更後のファイル名が既に存在
+      if (track.fileName !== newFileName && fs.existsSync(newPath)) {
         return { success: false, error: 'File name already exists' };
       }
 
+      // ファイル名を変更
       await fs.promises.rename(oldPath, newPath);
       track.fileName = newFileName;
+
+      // タイトルも変更
+      const ext = path.extname(newFileName);
+      const baseName = path.basename(newFileName, ext);
+      track.metadata.title = baseName;
+
       saveTrack(track);
 
       return { success: true, track };
@@ -312,41 +320,17 @@ export function setupStoreIPC() {
     }
   });
 
-  // トラックにタグを追加
-  ipcMain.handle('music:add-tag', (_event, trackId, tag) => {
+  // トラックのタグを更新
+  ipcMain.handle('music:update-tags', (_event, trackId, newTagsArray) => {
     try {
       const track = getTrackById(trackId);
       if (!track) {
         return { success: false, error: 'Track not found' };
       }
 
-      if (!track.tags) {
-        track.tags = [];
-      }
-
-      if (!track.tags.includes(tag)) {
-        track.tags.push(tag);
-        saveTrack(track);
-      }
-
-      return { success: true, track };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  });
-
-  // トラックからタグを削除
-  ipcMain.handle('music:remove-tag', (_event, trackId, tag) => {
-    try {
-      const track = getTrackById(trackId);
-      if (!track) {
-        return { success: false, error: 'Track not found' };
-      }
-
-      if (track.tags) {
-        track.tags = track.tags.filter(t => t !== tag);
-        saveTrack(track);
-      }
+      // 配列で上書き保存
+      track.tags = newTagsArray;
+      saveTrack(track);
 
       return { success: true, track };
     } catch (error) {

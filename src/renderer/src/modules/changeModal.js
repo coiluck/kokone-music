@@ -1,10 +1,13 @@
 // src/renderer/src/modules/changeModal.js
+import { closeEditModal } from './actionMusic'
+
 let isChanging = false;
 
 export function changeModal(modalName, scrollContainer, duration = 500, isFlex = false) {
   if (isChanging) {
     return;
   }
+  closeEditModal();
 
   const targetItem = document.getElementById(modalName);
   const targetIcon = targetItem.querySelector('.left-panel-item-icon');

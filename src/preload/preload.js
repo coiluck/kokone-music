@@ -8,19 +8,13 @@ contextBridge.exposeInMainWorld('music', {
   saveFiles: (filePaths) => ipcRenderer.invoke('music:save-files', filePaths),
   getAllMusic: () => ipcRenderer.invoke('music:get-all-music'),
 
-  // メタデータ
+  // 編集
   updateMetadata: (trackId, newMetadata) =>
     ipcRenderer.invoke('music:update-metadata', trackId, newMetadata),
   updateFilename: (trackId, newFileName) =>
     ipcRenderer.invoke('music:update-filename', trackId, newFileName),
-
-  // タグ
-  addTag: (trackId, tag) =>
-    ipcRenderer.invoke('music:add-tag', trackId, tag),
-  removeTag: (trackId, tag) =>
-    ipcRenderer.invoke('music:remove-tag', trackId, tag),
-  filterByTags: (options) =>
-    ipcRenderer.invoke('music:filter-by-tags', options),
+  updateTags: (trackId, newTags) => 
+    ipcRenderer.invoke('music:update-tags', trackId, newTags),
 
   // 履歴
   addHistory: (trackId) =>
