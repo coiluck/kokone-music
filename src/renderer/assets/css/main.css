@@ -74,7 +74,7 @@ body {
 }
 
 .modal .modal-section-conetainer {
-  width: max(70%, 280px);
+  width: max(80%, 280px);
   margin: 0 auto;
   padding-bottom: 80px; /* 再生UIで隠れないように */
 }

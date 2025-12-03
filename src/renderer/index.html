@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./assets/css/player-ui.css" />
     <link rel="stylesheet" href="./assets/css/tooltip.css" />
     <link rel="stylesheet" href="./assets/css/action-music.css" />
+    <link rel="stylesheet" href="./assets/css/tags.css" />
     <style>
       @font-face {
         font-family: 'mamelon3.5';
@@ -114,6 +115,34 @@
         <div class="modal" id="modal-tags">
           <div class="modal-section-conetainer">
             <div class="modal-title">Tags</div>
+
+            <div class="tags-search-section">
+              <div class="tags-search-item">
+                <div class="tags-search-label">抽出条件</div>
+                <div class="tags-input-container" id="tags-include-container">
+                  <input type="text" class="tags-input" placeholder="タグを入力 & Enterキーで追加" />
+                </div>
+              </div>
+              <div class="tags-search-item">
+                <div class="tags-search-label">除外条件</div>
+                <div class="tags-input-container" id="tags-exclude-container">
+                  <input type="text" class="tags-input" placeholder="除外するタグを入力 & Enterキーで追加" />
+                </div>
+              </div>
+              <div class="tags-condition-item">
+                <span class="tags-search-label">抽出条件</span>
+                <div class="tags-toggle">
+                  <input type="radio" name="tags-condition" id="tags-condition-and" value="AND" checked>
+                  <label for="tags-condition-and" class="tags-toggle-option">AND</label>
+                  <input type="radio" name="tags-condition" id="tags-condition-or" value="OR">
+                  <label for="tags-condition-or" class="tags-toggle-option">OR</label>
+                </div>
+              </div>
+            </div>
+
+            <section class="tags-section" id="tags-all-music">
+              <!-- atode -->
+            </section>
           </div>
         </div>
 

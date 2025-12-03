@@ -23,7 +23,7 @@
 }
 @media (max-width: 480px) {
   #playerUI-container.active {
-    top: calc(100% - 66.2px - 50px - 20px); /* 66.2はplayerUIの高さ、50はボトムナビゲーションの高さ、20は下への余白 */
+    top: calc(100% - 66.2px * 14 / 16 - 20px); /* 66.2 * 14 / 16 はplayerUIの高さ、20は下への余白 */
   }
 }
 

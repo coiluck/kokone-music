@@ -1,0 +1,105 @@
+.tags-search-section {
+  background-color: var(--bg-mild);
+  border-radius: var(--radius-small);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+@media (max-width: 480px) {
+  .tags-search-section {
+    padding: 10px;
+  }
+}
+
+.tags-search-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.tags-search-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tags-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-small);
+  padding: 8px;
+  min-height: calc(0.75rem * 1.6 + 8px * 2 + 8px * 2);
+  align-items: center;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--accent);
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.tag-chip-remove {
+  cursor: pointer;
+  font-weight: bold;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.tag-chip-remove:hover {
+  opacity: 1;
+}
+.tag-chip.exclude {
+  background-color: rgb(from var(--accent) r g b / 0.3);
+  border: 1px solid var(--accent);
+}
+
+.tags-input {
+  flex: 1;
+  min-width: 100px;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-family: var(--font);
+}
+.tags-input::placeholder {
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.tags-condition-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tags-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-small);
+  padding: 4px;
+}
+.tags-toggle input[type="radio"] {
+  display: none;
+}
+.tags-toggle-option {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  text-align: center;
+  border-radius: calc(var(--radius-small) - 4px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.tags-toggle-option:hover {
+  background-color: var(--bg-hover);
+}
+.tags-toggle input[type="radio"]:checked + .tags-toggle-option {
+  background-color: var(--accent);
+}

@@ -1,10 +1,10 @@
 // src/renderer/src/modules/actionMusic.js
 export function showActionMenu(event, music) {
   closeActionMenu();
-  
+
   const menu = document.createElement('div');
   menu.classList.add('action-menu');
-  
+
   const rect = event.target.getBoundingClientRect();
   menu.style.top = `${rect.bottom + window.scrollY}px`;
   menu.style.right = `${window.innerWidth - rect.right}px`;
@@ -69,7 +69,7 @@ function openEditModal(music) {
         </div>
         <div class="edit-form-item">
           <label for="edit-tags">Tags (カンマ区切り)</label>
-          <input type="text" id="edit-tags" class="edit-input" value="${currentTags}" placeholder="pop, Kawaii Future Bass, piano">
+          <input type="text" id="edit-tags" class="edit-input" value="${currentTags}" placeholder="例: Pop, Kawaii Future Bass, Piano">
         </div>
       </div>
 
@@ -116,9 +116,9 @@ function openEditModal(music) {
         const originalFileName = music.fileName;
         const extIndex = originalFileName.lastIndexOf('.'); // 拡張子
         const extension = extIndex !== -1 ? originalFileName.substring(extIndex) : '';
-        
+
         const newFileName = newTitle + extension;
-        
+
         promises.push(window.music.updateFilename(music.id, newFileName));
       }
 
@@ -132,12 +132,12 @@ function openEditModal(music) {
 
       // 全ての処理を待機
       const results = await Promise.all(promises);
-      
+
       // エラーチェック
       const errorResult = results.find(r => r && !r.success);
       if (errorResult) {
         alert(`保存に失敗しました: ${errorResult.error}`);
-        return; 
+        return;
       }
 
       // 成功時の処理
