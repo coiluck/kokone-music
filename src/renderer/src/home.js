@@ -180,8 +180,14 @@ async function scanAllMusic() {
       <div class="home-list-item-text">
         <span class="home-list-item-title">${music.title}</span>
         <div class="home-list-item-info">
-          <span class="home-list-item-artist">${music.artist}</span>
-          <span class="home-list-item-duration">${secondsToMinutes(music.duration)}</span>
+          <div class="home-list-item-info-left">
+            <span class="home-list-item-artist">${music.artist}</span>
+            <span class="home-list-item-separator">・</span>
+            <span class="home-list-item-duration">${secondsToMinutes(music.duration)}</span>
+          </div>
+          <div class="home-list-item-tags">
+            ${music.tags.map(tag => `<span class="home-list-item-tag">${tag}</span>`).join('')}
+          </div>
         </div>
       </div>
       <div class="home-list-item-actions"></div>
@@ -192,7 +198,7 @@ async function scanAllMusic() {
     });
 
     musicElement.querySelector('.home-list-item-actions').addEventListener('click', (e) => {
-      e.stopPropagation(); 
+      e.stopPropagation();
       showActionMenu(e, music);
     });
 

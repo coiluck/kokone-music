@@ -85,7 +85,7 @@
 }
 
 .home-list-item-icon-container {
-  height: 80%;
+  height: 40px;
   aspect-ratio: 1 / 1;
   padding: 5px;
   background-color: var(--bg-hover);
@@ -109,13 +109,32 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  gap: 2px;
 }
 .home-list-item-title {
   font-size: 0.8rem;
 }
-.home-list-item-info .home-list-item-artist, .home-list-item-info .home-list-item-duration {
+.home-list-item-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
   font-size: 0.6rem;
+}
+.home-list-item-info .home-list-item-artist, .home-list-item-info .home-list-item-duration {
   opacity: 0.8;
+}
+.home-list-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.home-list-item-tag {
+  background-color: rgb(from var(--accent) r g b / 0.2);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
 }
 .home-list-item-actions {
   position: relative;

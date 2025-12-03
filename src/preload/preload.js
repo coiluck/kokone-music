@@ -13,8 +13,11 @@ contextBridge.exposeInMainWorld('music', {
     ipcRenderer.invoke('music:update-metadata', trackId, newMetadata),
   updateFilename: (trackId, newFileName) =>
     ipcRenderer.invoke('music:update-filename', trackId, newFileName),
-  updateTags: (trackId, newTags) => 
+  updateTags: (trackId, newTags) =>
     ipcRenderer.invoke('music:update-tags', trackId, newTags),
+
+  filterByTags: (options) =>
+    ipcRenderer.invoke('music:filter-by-tags', options),
 
   // 履歴
   addHistory: (trackId) =>

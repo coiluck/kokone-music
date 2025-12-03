@@ -1,6 +1,7 @@
 .tags-search-section {
   background-color: var(--bg-mild);
   border-radius: var(--radius-small);
+  margin-bottom: 15px;
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -54,7 +55,7 @@
   opacity: 1;
 }
 .tag-chip.exclude {
-  background-color: rgb(from var(--accent) r g b / 0.3);
+  background-color: rgb(from var(--accent) r g b / 0.2);
   border: 1px solid var(--accent);
 }
 
@@ -102,4 +103,92 @@
 }
 .tags-toggle input[type="radio"]:checked + .tags-toggle-option {
   background-color: var(--accent);
+}
+
+
+.no-results.tags {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.8rem;
+}
+
+
+.tags-list-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 15px;
+  padding: 8px;
+  border-radius: var(--radius-small);
+  transition: all 0.3s ease;
+}
+.tags-list-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.tags-list-item-icon-container {
+  height: 40px;
+  aspect-ratio: 1 / 1;
+  padding: 5px;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-small);
+}
+.tags-list-item-icon {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-small);
+  mask-image: url('../images/music.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+  opacity: 0.5;
+}
+
+.tags-list-item-text {
+  display: flex;
+  flex-direction: column;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tags-list-item-title {
+  font-size: 0.8rem;
+}
+.tags-list-item-info {
+  font-size: 0.6rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.tags-list-item-info .tags-list-item-artist, .tags-list-item-info .tags-list-item-duration {
+  opacity: 0.8;
+}
+.tags-list-item-actions {
+  position: relative;
+  height: 40%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-small);
+  mask-image: url('../images/ellipsis.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.tags-list-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tags-list-item-tag {
+  background-color: rgb(from var(--accent) r g b / 0.2);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
 }
