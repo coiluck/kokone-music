@@ -131,8 +131,8 @@
 #playerUI-button-repeat {
   mask-image: url('../images/player-ui/repeat.svg');
 }
-#playerUI-button-repeat-one {
-  mask-image: url('../images/player-ui/repeat-one.svg');
+#playerUI-button-will-stop {
+  mask-image: url('../images/player-ui/will-stop.svg');
 }
 #playerUI-button-list-order {
   mask-image: url('../images/player-ui/list-order.svg');

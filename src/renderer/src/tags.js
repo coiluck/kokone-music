@@ -53,7 +53,6 @@ addTagChip(excludeContainer, excludeInput, true);
 const conditionRadios = document.querySelectorAll('input[name="tags-condition"]');
 conditionRadios.forEach(radio => {
   radio.addEventListener('change', (e) => {
-    const currentCondition = e.target.value;
     searchMusic();
   });
 });
@@ -120,7 +119,7 @@ function renderMusicList(musicList) {
 
     // クリックで再生
     musicElement.addEventListener('click', () => {
-      playMusic(music);
+      playMusic(music, musicList);
     });
 
     // 右クリック/アクションメニュー
@@ -134,11 +133,11 @@ function renderMusicList(musicList) {
 }
 
 // 音楽再生用のヘルパー関数
-function playMusic(musicItem) {
+function playMusic(musicItem, musicList) {
   musicPlayer.play(musicItem.path, {
     id: musicItem.id,
     title: musicItem.title,
     artist: musicItem.artist,
     duration: musicItem.duration
-  });
+  }, musicList);
 }

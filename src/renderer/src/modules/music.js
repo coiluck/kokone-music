@@ -8,9 +8,12 @@ class MusicPlayer {
     this.isPlaying = false;
     this.repeatMode = 'list-order'; // 'list-order', 'repeat', 'repeat-one', 'shuffle'
     this.updateInterval = null;
+    this.playlist = [];
+    this.currentIndex = -1;
+    this.shuffleHistory = [];
   }
 
-  play(filePath, trackInfo = {}) {
+  play(filePath, trackInfo = {}, playlist = null) {
     // 既存の再生を停止
     this.stop();
 
@@ -22,6 +25,13 @@ class MusicPlayer {
       artist: trackInfo.artist || 'Unknown',
       duration: trackInfo.duration || 0
     };
+
+    if (playlist) {
+      // この曲のプレイリスト内の位置
+      this.playlist = playlist;
+      this.currentIndex = this.playlist.findIndex(track => track.id === trackInfo.id);
+      this.shuffleHistory = [this.currentIndex]; // 新しいプレイリストなら破棄
+    }
 
     setupPlayerUi(
       this.currentTrack.title,
@@ -38,6 +48,24 @@ class MusicPlayer {
       this.error(e)
     });
 
+    this.audio.addEventListener('ended', () => {
+      this.stopTimeUpdate();
+      // 次の曲再生などの処理
+      console.log(this.repeatMode);
+      if (this.repeatMode === 'repeat') {
+        // リピート
+        this.play(this.currentTrack.path, this.currentTrack, null); // プレイリストは維持
+      } else if (this.repeatMode === 'will-stop') {
+        // 停止
+        this.isPlaying = false;
+        updatePlayPauseButton(false);
+      } else {
+        // 残りはリスト順とシャッフル
+        // これはUIの`#playerUI-button-next`からも呼ばれるからこの中でも処理書く！
+        this.next();
+      }
+    });
+
     // 再生開始
     this.audio.play()
       .then(() => {
@@ -50,12 +78,6 @@ class MusicPlayer {
       .catch(error => {
         this.error(error)
       });
-
-
-    this.audio.addEventListener('ended', () => {
-      this.stopTimeUpdate();
-      // 次の曲再生などの処理をここに追加
-    });
   }
 
   pause() {
@@ -76,6 +98,53 @@ class MusicPlayer {
         .catch(error => {
           this.error(error)
         });
+    }
+  }
+
+  prev() {
+    if (this.playlist.length === 0) return;
+
+    // 再生時間が1秒以上経過していれば曲の頭に戻る
+    if (this.audio && this.audio.currentTime > 1) {
+      this.audio.currentTime = 0;
+      return;
+    }
+
+    let prevIndex = this.currentIndex - 1;
+    if (prevIndex < 0) {
+      prevIndex = 0; // 最初なら先頭のまま
+    }
+
+    this.playAtIndex(prevIndex);
+  }
+
+  next() {
+    if (this.playlist.length === 0) {
+      return;
+    }
+
+    let nextIndex;
+
+    if (this.repeatMode === 'shuffle') {
+      nextIndex = this.getNextShuffleIndex();
+    } else if (this.repeatMode === 'repeat') {
+      this.play(this.currentTrack.path, this.currentTrack, null); // プレイリストは維持
+      return;
+    } else {
+      nextIndex = this.currentIndex + 1
+      if (nextIndex >= this.playlist.length) {
+        // リストの最後まで来たら最初から
+        nextIndex = 0;
+      }
+    }
+    this.playAtIndex(nextIndex); // 次の曲へ
+  }
+
+  playAtIndex(index) {
+    if (index >= 0 && index < this.playlist.length) {
+      const track = this.playlist[index];
+      this.play(track.path, track, null); // プレイリストを上書きしないnull
+      this.currentIndex = index;
     }
   }
 
@@ -155,6 +224,28 @@ class MusicPlayer {
       const percentage = (currentTime / duration) * 100;
       seekbarCurrent.style.width = `${percentage}%`;
     }
+  }
+    
+  getNextShuffleIndex() {
+    // 全曲再生済みならリセット
+    if (this.shuffleHistory.length >= this.playlist.length) {
+      this.shuffleHistory = [];
+    }
+
+    // まだ再生していない曲のインデックスを取得
+    const unplayedIndices = [];
+    for (let i = 0; i < this.playlist.length; i++) {
+      if (!this.shuffleHistory.includes(i)) {
+        unplayedIndices.push(i);
+      }
+    }
+
+    // ランダムに選択
+    const randomIndex = Math.floor(Math.random() * unplayedIndices.length);
+    const nextIndex = unplayedIndices[randomIndex];
+    this.shuffleHistory.push(nextIndex);
+
+    return nextIndex;
   }
 
   error(e) {

@@ -156,7 +156,7 @@ async function setUpReccomended() {
     `;
     document.getElementById('home-recommended').appendChild(trackElement);
     trackElement.addEventListener('click', () => {
-      playMusic(track);
+      playMusic(track, recommendedTracks);
     });
   }
 }
@@ -194,7 +194,7 @@ async function scanAllMusic() {
     `;
 
     musicElement.addEventListener('click', () => {
-      playMusic(music);
+      playMusic(music, allMusic);
     });
 
     musicElement.querySelector('.home-list-item-actions').addEventListener('click', (e) => {
@@ -207,12 +207,12 @@ async function scanAllMusic() {
 }
 
 // 音楽再生用の関数
-function playMusic(musicItem) {
+function playMusic(musicItem, playlist) {
   musicPlayer.play(musicItem.path, {
     id: musicItem.id,
     title: musicItem.title,
     artist: musicItem.artist,
     duration: musicItem.duration
-  });
+  }, playlist);
   console.log(`Playing: ${musicItem.path}`);
 }

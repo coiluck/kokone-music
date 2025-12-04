@@ -51,6 +51,10 @@ export function changeModal(modalName, scrollContainer, duration = 500, isFlex =
     if (scrollContainer) {
       const container = document.querySelector(`${scrollContainer}`);
       if (container) container.scrollTop = 0;
+    } else {
+      // 何もないなら...
+      // targetModal.scrollTop = 0;
+      // これ、ないほうがいい気がしてきた
     }
   }, duration);
 

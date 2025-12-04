@@ -61,15 +61,15 @@ function openEditModal(music) {
       <div class="edit-form-container">
         <div class="edit-form-item">
           <label for="edit-filename">ファイル名</label>
-          <input type="text" id="edit-filename" class="edit-input" value="${currentTitle}">
+          <input type="text" id="edit-filename" class="edit-input" value="${currentTitle}" spellcheck="false">
         </div>
         <div class="edit-form-item">
           <label for="edit-artist">Artist</label>
-          <input type="text" id="edit-artist" class="edit-input" value="${currentArtist || ''}">
+          <input type="text" id="edit-artist" class="edit-input" value="${currentArtist || ''}" spellcheck="false">
         </div>
         <div class="edit-form-item">
           <label for="edit-tags">Tags (カンマ区切り)</label>
-          <input type="text" id="edit-tags" class="edit-input" value="${currentTags}" placeholder="例: Pop, Kawaii Future Bass, Piano">
+          <input type="text" id="edit-tags" class="edit-input" value="${currentTags}" placeholder="例: Pop, Kawaii Future Bass, Piano" spellcheck="false">
         </div>
       </div>
 

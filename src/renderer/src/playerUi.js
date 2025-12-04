@@ -45,7 +45,7 @@ export function updateRepeatButton(mode) {
   const buttons = {
     'list-order': document.getElementById('playerUI-button-list-order'),
     'repeat': document.getElementById('playerUI-button-repeat'),
-    'repeat-one': document.getElementById('playerUI-button-repeat-one'),
+    'will-stop': document.getElementById('playerUI-button-will-stop'),
     'shuffle': document.getElementById('playerUI-button-shuffle')
   };
 
@@ -60,7 +60,7 @@ export function updateRepeatButton(mode) {
   }
 }
 function cycleRepeatMode() {
-  const modes = ['list-order', 'repeat', 'repeat-one', 'shuffle'];
+  const modes = ['list-order', 'repeat', 'will-stop', 'shuffle'];
   const currentIndex = modes.indexOf(musicPlayer.repeatMode);
   const nextIndex = (currentIndex + 1) % modes.length;
   musicPlayer.repeatMode = modes[nextIndex];
@@ -69,7 +69,7 @@ function cycleRepeatMode() {
   const messages = {
     'list-order': 'リスト順で再生',
     'repeat': 'この曲をリピート',
-    'repeat-one': '終了したら停止',
+    'will-stop': '終了したら停止',
     'shuffle': 'シャッフル再生'
   };
   // console.log(messages[musicPlayer.repeatMode]); tooltipをつけたので不要
@@ -98,5 +98,5 @@ import { addTooltipEvents } from './modules/addToolTip.js';
 
 addTooltipEvents(document.getElementById('playerUI-button-list-order'), 'リスト順で再生');
 addTooltipEvents(document.getElementById('playerUI-button-repeat'), 'この曲をリピート');
-addTooltipEvents(document.getElementById('playerUI-button-repeat-one'), '終了したら停止');
+addTooltipEvents(document.getElementById('playerUI-button-will-stop'), '終了したら停止');
 addTooltipEvents(document.getElementById('playerUI-button-shuffle'), 'シャッフル再生');
