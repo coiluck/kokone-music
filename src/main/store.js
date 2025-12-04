@@ -269,6 +269,39 @@ export function setupStoreIPC() {
     }
   });
 
+  ipcMain.handle('music:get-by-artist', async (_event, artistName) => {
+    try {
+      const allTracks = tracksStore.store || {};
+      const trackList = [];
+
+      for (const track of Object.values(allTracks)) {
+        // 一致するものだけを抽出
+        if (track.metadata && track.metadata.artist === artistName) {
+          const filePath = path.join(musicDir, track.fileName);
+
+          // ファイルが存在するか確認
+          if (fs.existsSync(filePath)) {
+            trackList.push({
+              id: track.id,
+              fileName: track.fileName,
+              path: filePath,
+              title: track.metadata.title,
+              artist: track.metadata.artist,
+              duration: track.metadata.duration,
+              tags: track.tags || [],
+              addedAt: track.addedAt
+            });
+          }
+        }
+      }
+
+      return trackList;
+    } catch (error) {
+      console.error('Error getting music by artist:', error);
+      return [];
+    }
+  });
+
   // トラックのメタデータを更新
   ipcMain.handle('music:update-metadata', async (_event, trackId, newMetadata) => {
     try {

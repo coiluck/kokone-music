@@ -5,6 +5,7 @@ import { setupAddMusic } from './addMusic.js'
 import { setupHome } from './home.js'
 import { closeActionMenu } from './modules/actionMusic.js'
 import { setupTags } from './tags.js'
+import { setupArtist } from './artist.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   // 初期modal
@@ -24,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAddMusic();
   // home
   setupHome();
+  // artist
+  setupArtist();
   // tags
   setupTags();
 });
