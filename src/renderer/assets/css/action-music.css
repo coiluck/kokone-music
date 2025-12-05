@@ -57,6 +57,7 @@
   height: 100%;
   width: 100%;
   backdrop-filter: blur(8px);
+  z-index: 3000;
 }
 
 .edit-container {
@@ -69,7 +70,7 @@
   gap: 10px;
   width: 80%;
   height: 80%;
-  padding: 20px;
+  padding: 15px;
   background: var(--bg-mild);
   border-radius: var(--radius-small);
 }
@@ -137,10 +138,10 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-small);
-} 
+}
 .edit-buttons .edit-btn.cancel {
   background-color: var(--bg-hover);
-} 
+}
 .edit-buttons .edit-btn.save {
   background-color: var(--accent);
 }
