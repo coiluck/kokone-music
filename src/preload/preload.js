@@ -18,6 +18,8 @@ contextBridge.exposeInMainWorld('music', {
 
   filterByTags: (options) =>
     ipcRenderer.invoke('music:filter-by-tags', options),
+  getByArtist: (artistName) => 
+    ipcRenderer.invoke('music:get-by-artist', artistName),
 
   // 履歴
   addHistory: (trackId) =>

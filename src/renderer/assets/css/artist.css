@@ -53,3 +53,128 @@
   font-size: 0.6rem;
   opacity: 0.8;
 }
+
+/* submodal */
+.artist-submodal-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  backdrop-filter: blur(8px);
+}
+.artist-submodal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 80%;
+  height: 80%;
+  padding: 20px;
+  background: var(--bg-mild);
+  border-radius: var(--radius-small);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.artist-submodal-title {
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--accent);
+}
+.artist-submodal-title::before {
+  content: '#';
+  color: var(--accent);
+  padding-right: .2rem;
+}
+
+.artist-submodal-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 15px;
+  padding: 8px;
+  border-radius: var(--radius-small);
+  transition: all 0.3s ease;
+}
+.artist-submodal-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.artist-submodal-item-icon-container {
+  height: 40px;
+  aspect-ratio: 1 / 1;
+  padding: 5px;
+  background-color: var(--bg-hover);
+  border-radius: var(--radius-small);
+}
+.artist-submodal-item-icon {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-small);
+  mask-image: url('../images/music.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+  opacity: 0.5;
+}
+
+.artist-submodal-item-text {
+  display: flex;
+  flex-direction: column;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  gap: 2px;
+}
+
+.artist-submodal-item-title {
+  font-size: 0.8rem;
+}
+.artist-submodal-item-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.6rem;
+}
+.artist-submodal-item-info-left {
+  opacity: 0.8;
+}
+.artist-submodal-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.artist-submodal-item-tag {
+  background-color: rgb(from var(--accent) r g b / 0.2);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+}
+
+.artist-submodal-item-actions {
+  position: relative;
+  height: 40%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-small);
+  mask-image: url('../images/ellipsis.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: var(--text);
+  opacity: 0.5;
+  cursor: pointer;
+}

@@ -7,7 +7,14 @@ export function changeModal(modalName, scrollContainer, duration = 500, isFlex =
   if (isChanging) {
     return;
   }
+  // submodalをいろいろ閉じる
   closeEditModal();
+  if(document.querySelector('.artist-submodal-overlay')) {
+    document.querySelector('.artist-submodal-overlay').classList.add('fade-out')
+    setTimeout(() => {
+      document.querySelector('.artist-submodal-overlay').remove();
+    }, 500);
+  }
 
   const targetItem = document.getElementById(modalName);
   const targetIcon = targetItem.querySelector('.left-panel-item-icon');

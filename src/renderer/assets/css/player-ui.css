@@ -16,6 +16,7 @@
   padding: 5px;
   background-color: var(--bg-mild);
   border-radius: var(--radius-small);
+  z-index: 2000;
   transition: all 0.3s ease;
 }
 #playerUI-container.active {
