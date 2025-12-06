@@ -55,8 +55,10 @@ async function setUpReccomended() {
       maxTrackPlays = Math.max(maxTrackPlays, trackPlayCounts[trackId]);
       // アーティストカウント
       const artist = track.artist || 'Unknown';
-      artistPlayCounts[artist] = (artistPlayCounts[artist] || 0) + 1;
-      maxArtistPlays = Math.max(maxArtistPlays, artistPlayCounts[artist]);
+      if (artist !== 'Unknown' && artist !== 'Unknown Artist') {
+        artistPlayCounts[artist] = (artistPlayCounts[artist] || 0) + 1;
+        maxArtistPlays = Math.max(maxArtistPlays, artistPlayCounts[artist]);
+      }
       // タグカウント
       if (track.tags && Array.isArray(track.tags)) {
         for (const tag of track.tags) {

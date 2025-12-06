@@ -104,12 +104,15 @@ function openEditModal(music) {
   // 保存ボタン
   document.getElementById('edit-btn-save').addEventListener('click', async () => {
     const newTitle = document.getElementById('edit-filename').value.trim();
-    const newArtist = document.getElementById('edit-artist').value.trim();
+    let newArtist = document.getElementById('edit-artist').value.trim();
     const tagsString = document.getElementById('edit-tags').value;
 
     if (!newTitle) {
       alert("タイトルは必須です");
       return;
+    }
+    if (!newArtist) {
+      newArtist = 'Unknown Artist';
     }
     // タグを配列に変換
     const newTags = tagsString.split(',')
