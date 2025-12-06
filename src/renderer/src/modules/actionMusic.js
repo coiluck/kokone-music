@@ -6,8 +6,18 @@ export function showActionMenu(event, music) {
   menu.classList.add('action-menu');
 
   const rect = event.target.getBoundingClientRect();
-  menu.style.top = `${rect.bottom + window.scrollY}px`;
-  menu.style.right = `${window.innerWidth - rect.right}px`;
+  const scrollContainer = event.target.closest('.modal, .artist-submodal-container');
+  if (scrollContainer) {
+    const containerRect = scrollContainer.getBoundingClientRect();
+    menu.style.top = `${rect.bottom - containerRect.top + scrollContainer.scrollTop}px`;
+    menu.style.right = `${containerRect.right - rect.right}px`;
+    scrollContainer.appendChild(menu);
+  } else {
+    // modal外
+    menu.style.top = `${rect.bottom + window.scrollY}px`;
+    menu.style.right = `${window.innerWidth - rect.right}px`;
+    document.body.appendChild(menu);
+  }
 
   menu.innerHTML = `
     <div class="action-menu-item" id="action-edit">
@@ -19,8 +29,6 @@ export function showActionMenu(event, music) {
       <span>Delete</span>
     </div>
   `;
-  document.body.appendChild(menu);
-
   // イベントリスナー
   document.getElementById('action-edit').addEventListener('click', (e) => {
     openEditModal(music); // 画面を開く

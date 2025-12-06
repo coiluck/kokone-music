@@ -76,6 +76,7 @@ async function searchMusic() {
     excludeTags: excludeTags,
     requirement: requirement
   });
+  results.sort((a, b) => a.title.localeCompare(b.title, 'ja'));
 
   // 描画
   renderMusicList(results);

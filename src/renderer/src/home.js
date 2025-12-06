@@ -165,6 +165,7 @@ import { showActionMenu } from './modules/actionMusic.js'
 
 async function scanAllMusic() {
   const allMusic = await window.music.getAllMusic();
+  allMusic.sort((a, b) => a.title.localeCompare(b.title, 'ja'));
 
   const homeContainer = document.getElementById('home-all-music');
   homeContainer.innerHTML = '';

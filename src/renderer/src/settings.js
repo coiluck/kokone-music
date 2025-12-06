@@ -210,13 +210,13 @@ function applyReccomended(userReccomended) {
 document.getElementById('setting-is-need-recommend').addEventListener('change', (e) => {
   window.settings.set('reccomended', {
     isNeedRecommend: e.target.checked,
-    recommendDays: document.getElementById('setting-recent-select').value
+    recommendDays: Number(document.getElementById('setting-recent-select').value)
   });
 });
 document.getElementById('setting-recent-select').addEventListener('change', (e) => {
   window.settings.set('reccomended', {
     isNeedRecommend: document.getElementById('setting-is-need-recommend').checked,
-    recommendDays: e.target.value
+    recommendDays: Number(e.target.value)
   });
 });
 

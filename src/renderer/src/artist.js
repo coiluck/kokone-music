@@ -37,6 +37,7 @@ export async function setupArtist() {
 
     card.addEventListener('click', async () => {
       const tracks = await window.music.getByArtist(artist);
+      tracks.sort((a, b) => a.title.localeCompare(b.title, 'ja'));
       openSubModal(artist, tracks);
     });
 
@@ -62,7 +63,7 @@ import { showActionMenu } from './modules/actionMusic.js';
 
 function openSubModal(artist, tracks) {
   const subModal = document.createElement('div');
-  subModal.classList.add('artist-submodal-overlay');
+  subModal.classList.add('artist-submodal-overlay', 'submodal');
 
   const subModalContainer = document.createElement('div');
   subModalContainer.classList.add('artist-submodal-container');
@@ -115,12 +116,12 @@ function openSubModal(artist, tracks) {
       musicPlayer.play(track.path, track, tracks);
     });
   });
-  
+
   const actionButton = subModalContainer.querySelectorAll('.artist-submodal-item-actions');
   actionButton.forEach((item, index) => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
-      const track = tracks[index]; 
+      const track = tracks[index];
       showActionMenu(e, track);
     });
   });
