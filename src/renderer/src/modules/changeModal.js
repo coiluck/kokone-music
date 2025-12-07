@@ -1,6 +1,4 @@
 // src/renderer/src/modules/changeModal.js
-import { closeEditModal } from './actionMusic'
-
 let isChanging = false;
 
 export function changeModal(modalName, scrollContainer, duration = 500, isFlex = false) {
@@ -8,11 +6,22 @@ export function changeModal(modalName, scrollContainer, duration = 500, isFlex =
     return;
   }
   // submodalをいろいろ閉じる
-  closeEditModal();
+  if(document.getElementById('edit-overlay')) {
+    document.getElementById('edit-overlay').classList.add('fade-out')
+    setTimeout(() => {
+      document.getElementById('edit-overlay').remove();
+    }, 500);
+  }
   if(document.querySelector('.artist-submodal-overlay')) {
     document.querySelector('.artist-submodal-overlay').classList.add('fade-out')
     setTimeout(() => {
       document.querySelector('.artist-submodal-overlay').remove();
+    }, 500);
+  }
+  if(document.querySelector('.playlist-submodal-overlay')) {
+    document.querySelector('.playlist-submodal-overlay').classList.add('fade-out')
+    setTimeout(() => {
+      document.querySelector('.playlist-submodal-overlay').remove();
     }, 500);
   }
 
@@ -42,7 +51,7 @@ export function changeModal(modalName, scrollContainer, duration = 500, isFlex =
     document.querySelectorAll('.modal').forEach(function(modal) {
       modal.style.display = 'none';
     });
-    
+
     const targetModal = document.getElementById(`modal-${modalName}`);
     if (targetModal) {
       targetModal.classList.remove('fade-out');

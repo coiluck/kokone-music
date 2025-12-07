@@ -6,6 +6,7 @@ import { setupHome } from './home.js'
 import { closeActionMenu } from './modules/actionMusic.js'
 import { setupTags } from './tags.js'
 import { setupArtist } from './artist.js'
+import { setupPlaylist } from './playlist.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   // 初期modal
@@ -25,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAddMusic();
   // home
   setupHome();
+  // playlist
+  setupPlaylist();
   // artist
   setupArtist();
   // tags
