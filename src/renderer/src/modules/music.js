@@ -4,6 +4,7 @@ import { setupPlayerUi, updatePlayPauseButton } from '../playerUi.js';
 class MusicPlayer {
   constructor() {
     this.audio = null;
+    this.volume = 1;
     this.currentTrack = null;
     this.isPlaying = false;
     this.repeatMode = 'list-order'; // 'list-order', 'repeat', 'repeat-one', 'shuffle'

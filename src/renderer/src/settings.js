@@ -240,9 +240,16 @@ function applyMusicVolume(musicVolume) {
   document.getElementById('setting-volume').value = musicVolume;
   document.getElementById('setting-volume-value').textContent = musicVolume + '%';
 }
-document.getElementById('setting-volume').addEventListener('change', (e) => {
-  window.settings.set('music-volume', e.target.value);
+document.getElementById('setting-volume').addEventListener('input', (e) => {
   document.getElementById('setting-volume-value').textContent = e.target.value + '%';
+});
+
+import { musicPlayer } from './modules/music.js';
+
+document.getElementById('setting-volume').addEventListener('change', (e) => {
+  const value = Number(e.target.value);
+  musicPlayer.volume = value / 100;
+  window.settings.set('music-volume', value);
 });
 
 // open userdata folder
