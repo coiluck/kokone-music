@@ -60,6 +60,11 @@ async function openSubModal() {
   document.getElementById('main-content').appendChild(subModal);
   subModal.appendChild(subModalContainer);
 
+  const titleInput = document.getElementById('playlist-title');
+  if (titleInput) {
+    titleInput.focus();
+  }
+
   allMusic.forEach(music => {
     const item = document.createElement('div');
     item.classList.add('playlist-select-item');
@@ -137,7 +142,7 @@ async function openSubModal() {
             window.playlist.addTrack(playlistId, trackId)
           ));
         }
-        await setUpPlaylistList();
+        await setupPlaylist();
         removeModal();
       } else {
         console.error('プレイリストの作成に失敗しました: ' + result.error);

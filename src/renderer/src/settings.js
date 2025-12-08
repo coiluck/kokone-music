@@ -220,6 +220,8 @@ document.getElementById('setting-recent-select').addEventListener('change', (e) 
   });
 });
 
+import { musicPlayer } from './modules/music.js';
+
 // normalize music volume
 async function getStoreNormalizeMusicVolume() {
   const normalizeMusicVolume = await window.settings.get('normalize-music-volume');
@@ -227,9 +229,11 @@ async function getStoreNormalizeMusicVolume() {
 }
 function applyNormalizeMusicVolume(normalizeMusicVolume) {
   document.getElementById('setting-normalize-music-volume').checked = normalizeMusicVolume;
+  //musicPlayer.setNormalizationEnabled(normalizeMusicVolume);
 }
 document.getElementById('setting-normalize-music-volume').addEventListener('change', (e) => {
   window.settings.set('normalize-music-volume', e.target.checked);
+  //musicPlayer.setNormalizationEnabled(e.target.checked);
 });
 // music volume
 async function getStoreMusicVolume() {
@@ -243,12 +247,9 @@ function applyMusicVolume(musicVolume) {
 document.getElementById('setting-volume').addEventListener('input', (e) => {
   document.getElementById('setting-volume-value').textContent = e.target.value + '%';
 });
-
-import { musicPlayer } from './modules/music.js';
-
 document.getElementById('setting-volume').addEventListener('change', (e) => {
   const value = Number(e.target.value);
-  musicPlayer.volume = value / 100;
+  //musicPlayer.setVolume(value / 100);
   window.settings.set('music-volume', value);
 });
 

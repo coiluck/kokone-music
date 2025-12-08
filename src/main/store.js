@@ -7,6 +7,19 @@ import { readFile } from 'fs/promises';
 import * as mm from 'music-metadata';
 import { createHash } from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from 'ffmpeg-static';
+import { app } from 'electron';
+import os from 'os';
+
+let ffmpegPath = ffmpegStatic;
+// ビルド後
+if (app.isPackaged) {
+  ffmpegPath = ffmpegStatic.replace('app.asar', 'app.asar.unpacked');
+}
+
+// fluent-ffmpeg に正しいパスをセット
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const settingsSchema = {
   'font': {
@@ -69,6 +82,42 @@ const tracksStore = new Store({ name: 'tracks' }); // 全曲のデータ
 const historyStore = new Store({ name: 'history' }); // 再生履歴
 const playlistsStore = new Store({ name: 'playlists' }); // プレイリスト
 
+function analyzeLoudness(filePath) {
+  return new Promise((resolve) => {
+    // WindowsはNUL、その他は/dev/null
+    const nullDevice = os.platform() === 'win32' ? 'NUL' : '/dev/null';
+    let logData = '';
+
+    ffmpeg(filePath)
+      .audioFilters('ebur128=peak=none')
+      .format('null')
+      .output(nullDevice)
+      .on('stderr', (stderrLine) => {
+        logData += stderrLine;
+      })
+      .on('end', () => {
+        // "I: ... LUFS"の最後のものを採用
+        const regex = /I:\s+(-?\d+\.\d+)\s+LUFS/g;
+        const matches = [...logData.matchAll(regex)];
+
+        if (matches.length > 0) {
+          // 配列の最後を取得
+          const lastMatch = matches[matches.length - 1];
+          const lufs = parseFloat(lastMatch[1]);
+          resolve(lufs);
+        } else {
+          console.warn('Loudness analysis failed to find value, using default.');
+          resolve(-14.0); // デフォルト値
+        }
+      })
+      .on('error', (err) => {
+        console.error('Error analyzing loudness:', err);
+        resolve(-14.0); // デフォルト値
+      })
+      .run();
+  });
+}
+
 // タグサイズを推定する関数
 function estimateTagSize(buffer) {
   // ID3v2タグの場合、先頭10バイトでサイズが分かる
@@ -123,6 +172,7 @@ function getTrackById(trackId) {
 
 // トラックを保存/更新
 function saveTrack(trackData) {
+  console.log(trackData)
   tracksStore.set(trackData.id, trackData);
 }
 
@@ -192,6 +242,7 @@ export function setupStoreIPC() {
 
           // メタデータを取得してトラックを作成
           const metadata = await mm.parseFile(newDestPath);
+          const lufs = await analyzeLoudness(newDestPath);
           const trackId = uuidv4();
           const trackData = {
             id: trackId,
@@ -200,7 +251,8 @@ export function setupStoreIPC() {
             metadata: {
               title: metadata.common.title || path.parse(newDestPath).name,
               artist: metadata.common.artist || 'Unknown Artist',
-              duration: metadata.format.duration || 0
+              duration: metadata.format.duration || 0,
+              volume: lufs
             },
             tags: [],
             addedAt: Date.now()
@@ -212,7 +264,7 @@ export function setupStoreIPC() {
         }
 
         await fs.promises.copyFile(srcPath, destPath);
-
+        const lufs = await analyzeLoudness(destPath);
         // メタデータを取得してトラックを作成
         const metadata = await mm.parseFile(destPath);
         const trackId = uuidv4();
@@ -223,7 +275,8 @@ export function setupStoreIPC() {
           metadata: {
             title: metadata.common.title || path.parse(fileName).name,
             artist: metadata.common.artist || 'Unknown Artist',
-            duration: metadata.format.duration || 0
+            duration: metadata.format.duration || 0,
+            volume: lufs
           },
           tags: [],
           addedAt: Date.now()

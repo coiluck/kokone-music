@@ -22,6 +22,16 @@
 .playlist-item:hover {
   transform: scale(1.03);
 }
+@media (max-width: 480px) {
+  .playlist-section {
+    grid-template-columns: repeat(auto-fill, 110px);
+    gap: 20px;
+  }
+  .playlist-item {
+    height: 110px;
+    aspect-ratio: 1 / 1;
+  }
+}
 
 .playlist-item-icon-container {
   flex: 1;

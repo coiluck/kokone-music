@@ -226,7 +226,7 @@ class MusicPlayer {
       seekbarCurrent.style.width = `${percentage}%`;
     }
   }
-    
+
   getNextShuffleIndex() {
     // 全曲再生済みならリセット
     if (this.shuffleHistory.length >= this.playlist.length) {
