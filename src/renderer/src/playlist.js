@@ -114,7 +114,7 @@ async function openSubModal() {
   document.getElementById('playlist-btn-save').addEventListener('click', async () => {
     const title = document.getElementById('playlist-title').value.trim();
     if (!title) {
-      alert('プレイリスト名を入力してください');
+      window.message.showMessage('プレイリスト名を入力してください', false);
       return;
     }
 
@@ -123,7 +123,7 @@ async function openSubModal() {
     const selectedTrackIds = Array.from(checkboxes).map(cb => cb.value);
 
     if (selectedTrackIds.length === 0) {
-      alert('曲を選択してください');
+      window.message.showMessage('曲を選択してください', false);
       return;
     }
 
@@ -418,7 +418,7 @@ async function openAddMusicModal(playlistId, currentTracks, onComplete) {
 
     } catch (error) {
       console.error('エラーが発生しました: ' + error);
-      alert('保存中にエラーが発生しました');
+      window.message.showMessage('保存中にエラーが発生しました', false);
     }
   });
 }

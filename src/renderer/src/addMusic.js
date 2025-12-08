@@ -17,7 +17,7 @@ export function setupAddMusic() {
     fileInput.click();
   });
 
-  // 2. ファイルが選択された時の処理
+  // ファイルが選択された時の処理
   fileInput.addEventListener('change', (e) => {
     handleFiles(e.target.files);
     fileInput.value = '';
@@ -53,7 +53,7 @@ async function handleFiles(files) {
   });
 
   if (mp3Files.length === 0 && invalidFiles.length > 0) {
-    alert('MP3ファイル以外はサポートされていません');
+    await window.message.showMessage('MP3ファイル以外はサポートされていません', false);
     return;
   }
 
@@ -97,11 +97,10 @@ async function handleFiles(files) {
       console.error('エラー詳細:', errorItems);
     }
 
-    alert(message);
+    await window.message.showMessage(message, false);
     // DOM更新
     setupHome();
   } catch (error) {
     console.error('詳細なエラー:', error);
-    alert('ファイルの保存に失敗しました。');
   }
 }

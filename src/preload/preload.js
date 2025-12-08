@@ -48,3 +48,6 @@ contextBridge.exposeInMainWorld('settings', {
 contextBridge.exposeInMainWorld('openUserDataFolder', {
   open: () => ipcRenderer.invoke('open-userdata-folder')
 });
+contextBridge.exposeInMainWorld('message', {
+  showMessage: (message, isNeedTwoButtons) => ipcRenderer.invoke('showMessage', message, isNeedTwoButtons)
+});

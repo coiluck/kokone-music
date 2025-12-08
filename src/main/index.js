@@ -1,5 +1,5 @@
 // src/main/index.js
-import { app, shell, BrowserWindow, ipcMain, protocol, net } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, protocol, dialog } from 'electron'
 import { join, extname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -200,3 +200,25 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.handle('showMessage', async (event, message, isNeedTwoButtons = false) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  
+  // ボタンの定義
+  const buttons = isNeedTwoButtons ? ['OK', 'キャンセル'] : ['OK'];
+  
+  const result = await dialog.showMessageBox(win, {
+    type: 'none',
+    title: 'kokone-music',
+    message: message,
+    buttons: buttons,
+    defaultId: 0,
+    cancelId: isNeedTwoButtons ? 1 : 0,
+    noLink: true
+  });
+  if (result.response === 0) {
+    return true;
+  } else if (result.response === 1) {
+    return false;
+  } 
+});

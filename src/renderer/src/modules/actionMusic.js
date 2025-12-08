@@ -108,7 +108,7 @@ function openEditModal(music) {
     const tagsString = document.getElementById('edit-tags').value;
 
     if (!newTitle) {
-      alert("タイトルは必須です");
+      await window.message.showMessage('タイトルは必須です', false);
       return;
     }
     if (!newArtist) {
@@ -147,7 +147,7 @@ function openEditModal(music) {
       // エラーチェック
       const errorResult = results.find(r => r && !r.success);
       if (errorResult) {
-        alert(`保存に失敗しました: ${errorResult.error}`);
+        window.message.showMessage(`保存に失敗しました: ${errorResult.error}`, false);
         return;
       }
 
@@ -157,7 +157,6 @@ function openEditModal(music) {
 
     } catch (err) {
       console.error(err);
-      alert('予期せぬエラーが発生しました。');
     }
   });
 }
