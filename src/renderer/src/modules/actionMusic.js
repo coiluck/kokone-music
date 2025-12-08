@@ -1,4 +1,10 @@
 // src/renderer/src/modules/actionMusic.js
+import { musicPlayer } from './music.js';
+import { setupHome } from '../home.js';
+import { setupPlaylist } from '../playlist.js';
+import { setupArtist } from '../artist.js';
+import { setupTags } from '../tags.js';
+
 export function showActionMenu(event, music) {
   closeActionMenu();
 
@@ -36,10 +42,25 @@ export function showActionMenu(event, music) {
   });
   document.getElementById('action-delete').addEventListener('click', async (e) => {
     e.stopPropagation();
-    const confirmDelete = confirm(`"${music.title}" を削除しますか？`);
+    const confirmDelete = await window.message.showMessage(`"${music.title}" を削除しますか？`, true);
     if (confirmDelete) {
       // 消す処理
-      // 後で書く
+      try {
+        const result = await window.music.delete(music.id);
+        if (result.success) {
+          musicPlayer.removeTrackFromPlaylist(music.id);
+          // 表示を更新
+          // home, playlist, artist, tagのすべてのsetUpを走らせる
+          setupHome();
+          setupPlaylist();
+          setupArtist();
+          setupTags();
+        } else {
+          window.message.showMessage(`削除に失敗しました: ${result.error}`, false);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
     closeActionMenu();
   });
@@ -154,7 +175,10 @@ function openEditModal(music) {
       // 成功時の処理
       closeEditModal();
       // home, playlist, artist, tagのすべてのsetUpを走らせる
-
+      setupHome();
+      setupPlaylist();
+      setupArtist();
+      setupTags();
     } catch (err) {
       console.error(err);
     }

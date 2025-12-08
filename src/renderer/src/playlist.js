@@ -180,10 +180,6 @@ async function openPlaylistModal(playlistId) {
   const allMusic = await window.music.getAllMusic();
   const playlistTracks = playlist.trackIds
     .map(id => allMusic.find(m => m.id === id))
-    .filter(item => item !== undefined);
-    // 削除された曲を除外
-    // 書けそうなら削除時にplaylistから削除するほうがいい
-    // 後で書く
 
   const playlistModal = document.createElement('div');
   playlistModal.classList.add('playlist-submodal-overlay', 'submodal');
@@ -330,7 +326,7 @@ async function openAddMusicModal(playlistId, currentTracks, onComplete) {
   modalContainer.classList.add('playlist-submodal-container');
 
   modalContainer.innerHTML = `
-    <p class="playlist-submodal-title">曲の選択</p>
+    <p class="playlist-submodal-title">曲を選択</p>
     <div class="playlist-form-container">
       <div id="playlist-add-select-container" class="playlist-select-container">
       </div>

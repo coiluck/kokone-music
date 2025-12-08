@@ -238,6 +238,43 @@ export function setupStoreIPC() {
     return results;
   });
 
+  // 曲を削除
+  ipcMain.handle('music:delete', async (_event, trackId) => {
+    try {
+      const track = getTrackById(trackId);
+      if (!track) {
+        return { success: false, error: 'Track not found' };
+      }
+
+      // mp3ファイルを削除
+      const filePath = path.join(musicDir, track.fileName);
+      if (fs.existsSync(filePath)) {
+        await fs.promises.unlink(filePath);
+      }
+
+      // tracksStoreからデータを削除
+      tracksStore.delete(trackId);
+
+      // historyStoreの曲idに一致する履歴をすべて削除
+      const history = historyStore.get('playHistory') || [];
+      const newHistory = history.filter(h => h.trackId !== trackId);
+      historyStore.set('playHistory', newHistory);
+
+      // playlistsStoreのtrackIdsから曲idに一致するものを削除
+      const allPlaylists = playlistsStore.store || {};
+      for (const [playlistId, playlist] of Object.entries(allPlaylists)) {
+        if (playlist.trackIds && playlist.trackIds.includes(trackId)) {
+          playlist.trackIds = playlist.trackIds.filter(id => id !== trackId);
+          playlistsStore.set(playlistId, playlist);
+        }
+      }
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting track:', error);
+      return { success: false, error: error.message };
+    }
+  });
+
   // すべての音楽を取得
   ipcMain.handle('music:get-all-music', async () => {
     try {

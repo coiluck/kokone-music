@@ -248,6 +248,24 @@ class MusicPlayer {
     return nextIndex;
   }
 
+  removeTrackFromPlaylist(trackId) {
+    if (!this.playlist || this.playlist.length === 0) return;
+
+    const index = this.playlist.findIndex(track => track.id === trackId);
+    if (index === -1) return;
+
+    // 現在再生中の曲なら停止
+    if (this.currentTrack && this.currentTrack.id === trackId) {
+      this.stop();
+      updatePlayPauseButton(false);
+      document.getElementById('playerUI-container').classList.remove('active');
+    } else if (index < this.currentIndex) {
+      this.currentIndex--;
+    }
+    this.playlist.splice(index, 1);
+    this.shuffleHistory = [];
+  }
+
   error(e) {
     const errorObj = this.audio ? this.audio.error : null;
     const errorCode = errorObj ? errorObj.code : 'unknown';

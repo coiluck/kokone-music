@@ -39,6 +39,9 @@ export function setupAddMusic() {
 
 // 追加したら反映するためのもの
 import { setupHome } from './home.js'
+import { setupPlaylist } from './playlist.js'
+import { setupArtist } from './artist.js'
+import { setupTags } from './tags.js'
 
 async function handleFiles(files) {
   if (!files || files.length === 0) return;
@@ -100,6 +103,9 @@ async function handleFiles(files) {
     await window.message.showMessage(message, false);
     // DOM更新
     setupHome();
+    setupPlaylist();
+    setupArtist();
+    setupTags();
   } catch (error) {
     console.error('詳細なエラー:', error);
   }

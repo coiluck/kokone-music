@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('music', {
   getPath: () => ipcRenderer.invoke('music:get-path'),
   getFilePath: (file) => webUtils.getPathForFile(file),
   saveFiles: (filePaths) => ipcRenderer.invoke('music:save-files', filePaths),
+  delete: (trackId) => ipcRenderer.invoke('music:delete', trackId),
   getAllMusic: () => ipcRenderer.invoke('music:get-all-music'),
 
   // 編集
