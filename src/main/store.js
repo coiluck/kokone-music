@@ -511,6 +511,40 @@ export function setupStoreIPC() {
       return [];
     }
   });
+
+  // 特定のプレイリストを取得
+  ipcMain.handle('playlist:get', (_event, playlistId) => {
+    try {
+      const playlist = playlistsStore.get(playlistId);
+      if (!playlist) return { success: false, error: 'Playlist not found' };
+      return playlist;
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
+  // プレイリスト名を変更
+  ipcMain.handle('playlist:change-name', (_event, playlistId, newName) => {
+    try {
+      const playlist = playlistsStore.get(playlistId);
+      if (!playlist) return { success: false, error: 'Playlist not found' };
+      playlist.name = newName;
+      playlistsStore.set(playlistId, playlist);
+      return { success: true, playlist };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
+  // プレイリストを削除
+  ipcMain.handle('playlist:delete', (_event, playlistId) => {
+    try {
+      playlistsStore.delete(playlistId);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
 }
 
 export default store;

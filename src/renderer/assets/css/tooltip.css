@@ -9,7 +9,7 @@
   max-width: 300px;
   text-align: left;
   pointer-events: none;
-  z-index: 1001;
+  z-index: 9999;
   opacity: 0.8;
   /* 吹き出しのしっぽ */
   &::after {

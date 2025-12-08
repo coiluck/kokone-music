@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld('music', {
 
   filterByTags: (options) =>
     ipcRenderer.invoke('music:filter-by-tags', options),
-  getByArtist: (artistName) => 
+  getByArtist: (artistName) =>
     ipcRenderer.invoke('music:get-by-artist', artistName),
 
   // 履歴
@@ -35,6 +35,9 @@ contextBridge.exposeInMainWorld('playlist', {
   removeTrack: (playlistId, trackId) =>
     ipcRenderer.invoke('playlist:remove-track', playlistId, trackId),
   getAll: () => ipcRenderer.invoke('playlist:get-all'),
+  get: (playlistId) => ipcRenderer.invoke('playlist:get', playlistId),
+  changeName: (playlistId, name) => ipcRenderer.invoke('playlist:change-name', playlistId, name),
+  delete: (playlistId) => ipcRenderer.invoke('playlist:delete', playlistId),
 });
 
 contextBridge.exposeInMainWorld('settings', {
