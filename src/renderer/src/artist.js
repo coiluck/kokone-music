@@ -113,7 +113,13 @@ function openSubModal(artist, tracks) {
   musicItems.forEach((item, index) => {
     item.addEventListener('click', () => {
       const track = tracks[index];
-      musicPlayer.play(track.path, track, tracks);
+      musicPlayer.play(track.path, {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        duration: track.duration,
+        volume: track.volume
+      }, tracks);
     });
   });
 

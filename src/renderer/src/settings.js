@@ -229,11 +229,11 @@ async function getStoreNormalizeMusicVolume() {
 }
 function applyNormalizeMusicVolume(normalizeMusicVolume) {
   document.getElementById('setting-normalize-music-volume').checked = normalizeMusicVolume;
-  //musicPlayer.setNormalizationEnabled(normalizeMusicVolume);
+  musicPlayer.setNormalizationEnabled(normalizeMusicVolume);
 }
 document.getElementById('setting-normalize-music-volume').addEventListener('change', (e) => {
   window.settings.set('normalize-music-volume', e.target.checked);
-  //musicPlayer.setNormalizationEnabled(e.target.checked);
+  musicPlayer.setNormalizationEnabled(e.target.checked);
 });
 // music volume
 async function getStoreMusicVolume() {
@@ -246,10 +246,11 @@ function applyMusicVolume(musicVolume) {
 }
 document.getElementById('setting-volume').addEventListener('input', (e) => {
   document.getElementById('setting-volume-value').textContent = e.target.value + '%';
+  const value = Number(e.target.value);
+  musicPlayer.setVolume(value / 100);
 });
 document.getElementById('setting-volume').addEventListener('change', (e) => {
   const value = Number(e.target.value);
-  //musicPlayer.setVolume(value / 100);
   window.settings.set('music-volume', value);
 });
 

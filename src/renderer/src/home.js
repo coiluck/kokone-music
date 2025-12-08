@@ -215,7 +215,8 @@ function playMusic(musicItem, playlist) {
     id: musicItem.id,
     title: musicItem.title,
     artist: musicItem.artist,
-    duration: musicItem.duration
+    duration: musicItem.duration,
+    volume: musicItem.volume
   }, playlist);
   console.log(`Playing: ${musicItem.path}`);
 }

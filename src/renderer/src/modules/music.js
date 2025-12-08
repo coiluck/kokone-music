@@ -1,10 +1,11 @@
 // src/renderer/src/modules/music.js
 import { setupPlayerUi, updatePlayPauseButton } from '../playerUi.js';
 
+const TARGET_LUFS = -14.0;
+
 class MusicPlayer {
   constructor() {
     this.audio = null;
-    this.volume = 1;
     this.currentTrack = null;
     this.isPlaying = false;
     this.repeatMode = 'list-order'; // 'list-order', 'repeat', 'repeat-one', 'shuffle'
@@ -12,11 +13,52 @@ class MusicPlayer {
     this.playlist = [];
     this.currentIndex = -1;
     this.shuffleHistory = [];
+    this.isNormalizationEnabled = true;
+    this.userVolume = 1;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.audioContext = new AudioContext();
+    this.gainNode = this.audioContext.createGain();
+    this.gainNode.connect(this.audioContext.destination);
+
+    this.sourceNode = null;
+  }
+
+  setNormalizationEnabled(enabled) {
+    this.isNormalizationEnabled = enabled;
+    if (this.currentTrack) {
+      this.applyVolume(this.currentTrack.volume);
+    }
+  }
+
+  setVolume(volume) {
+    this.userVolume = Math.max(0, volume);
+    if (this.currentTrack) {
+      this.applyVolume(this.currentTrack.volume);
+    }
+  }
+
+  applyVolume(trackLufs) {
+    console.log(`[applyVolume] Called. trackLufs: ${trackLufs}, Enabled: ${this.isNormalizationEnabled}`);
+    let normalizationGain = 1.0;
+
+    if (this.isNormalizationEnabled && trackLufs) {
+      const diff = TARGET_LUFS - trackLufs;
+      normalizationGain = Math.pow(10, diff / 20);
+      console.log(normalizationGain);
+    }
+
+    const finalGain = this.userVolume * normalizationGain;
+
+    this.gainNode.gain.setTargetAtTime(finalGain, this.audioContext.currentTime, 0.1);
   }
 
   play(filePath, trackInfo = {}, playlist = null) {
     // 既存の再生を停止
     this.stop();
+
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
 
     // 新しい曲情報を保存
     this.currentTrack = {
@@ -24,7 +66,8 @@ class MusicPlayer {
       path: filePath,
       title: trackInfo.title || 'Unknown',
       artist: trackInfo.artist || 'Unknown',
-      duration: trackInfo.duration || 0
+      duration: trackInfo.duration || 0,
+      volume: trackInfo.volume
     };
 
     if (playlist) {
@@ -43,6 +86,15 @@ class MusicPlayer {
     // 新しいAudioインスタンスを作成
     const fileUrl = `media://play?path=${encodeURIComponent(filePath)}`;
     this.audio = new Audio(fileUrl);
+    this.audio.crossOrigin = "anonymous";
+
+    if (this.sourceNode) {
+      this.sourceNode.disconnect();
+    }
+
+    this.sourceNode = this.audioContext.createMediaElementSource(this.audio);
+    this.sourceNode.connect(this.gainNode);
+    this.applyVolume(this.currentTrack.volume);
 
     // エラー
     this.audio.addEventListener('error', (e) => {
@@ -158,13 +210,10 @@ class MusicPlayer {
       this.audio = null;
       this.isPlaying = false;
       this.currentTrack = null;
-    }
-  }
-
-  // 音量調整
-  setVolume(volume) {
-    if (this.audio) {
-      this.audio.volume = Math.max(0, Math.min(1, volume));
+      if (this.sourceNode) {
+        this.sourceNode.disconnect();
+        this.sourceNode = null;
+      }
     }
   }
 

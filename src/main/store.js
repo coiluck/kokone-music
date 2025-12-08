@@ -97,7 +97,7 @@ function analyzeLoudness(filePath) {
       })
       .on('end', () => {
         // "I: ... LUFS"の最後のものを採用
-        const regex = /I:\s+(-?\d+\.\d+)\s+LUFS/g;
+        const regex = /I:\s+(-?\d+(?:\.\d+)?)\s+LUFS/g;
         const matches = [...logData.matchAll(regex)];
 
         if (matches.length > 0) {
@@ -346,6 +346,7 @@ export function setupStoreIPC() {
             title: track.metadata.title,
             artist: track.metadata.artist,
             duration: track.metadata.duration,
+            volume: track.metadata.volume,
             tags: track.tags || [],
             addedAt: track.addedAt
           });
@@ -378,6 +379,7 @@ export function setupStoreIPC() {
               title: track.metadata.title,
               artist: track.metadata.artist,
               duration: track.metadata.duration,
+              volume: track.metadata.volume,
               tags: track.tags || [],
               addedAt: track.addedAt
             });
@@ -497,6 +499,7 @@ export function setupStoreIPC() {
         title: track.metadata.title,
         artist: track.metadata.artist,
         duration: track.metadata.duration,
+        volume: track.metadata.volume,
         tags: track.tags || []
       }));
     } catch (error) {

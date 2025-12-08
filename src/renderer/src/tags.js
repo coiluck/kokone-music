@@ -139,6 +139,7 @@ function playMusic(musicItem, musicList) {
     id: musicItem.id,
     title: musicItem.title,
     artist: musicItem.artist,
-    duration: musicItem.duration
+    duration: musicItem.duration,
+    volume: musicItem.volume
   }, musicList);
 }
