@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: package.json
+productName: Kokone Music
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ asarUnpack:
   - resources/**
   - '**/node_modules/ffmpeg-static/**'
 win:
-  executableName: package.json
+  executableName: Kokone Music
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
