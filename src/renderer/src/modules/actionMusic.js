@@ -141,32 +141,32 @@ function openEditModal(music) {
       .filter(tag => tag.length > 0);
 
     try {
-      const promises = [];
+      // エラーチェック
+      let errorResult = null;
 
-      // ファイル名の更新
+      // ファイル名
       if (newTitle !== currentTitle) {
         const originalFileName = music.fileName;
-        const extIndex = originalFileName.lastIndexOf('.'); // 拡張子
+        const extIndex = originalFileName.lastIndexOf('.');
         const extension = extIndex !== -1 ? originalFileName.substring(extIndex) : '';
-
         const newFileName = newTitle + extension;
 
-        promises.push(window.music.updateFilename(music.id, newFileName));
+        const result = await window.music.updateFilename(music.id, newFileName);
+        if (!result.success) errorResult = result;
       }
 
       // Artistの更新
-      if (newArtist !== currentArtist) {
-        promises.push(window.music.updateMetadata(music.id, { artist: newArtist }));
+      if (!errorResult && newArtist !== currentArtist) {
+        const result = await window.music.updateMetadata(music.id, { artist: newArtist });
+        if (!result.success) errorResult = result;
       }
 
-      // タグの更新
-      promises.push(window.music.updateTags(music.id, newTags));
+      // タグ
+      if (!errorResult) {
+        const result = await window.music.updateTags(music.id, newTags);
+        if (!result.success) errorResult = result;
+      }
 
-      // 全ての処理を待機
-      const results = await Promise.all(promises);
-
-      // エラーチェック
-      const errorResult = results.find(r => r && !r.success);
       if (errorResult) {
         window.message.showMessage(`保存に失敗しました: ${errorResult.error}`, false);
         return;

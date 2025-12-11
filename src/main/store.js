@@ -11,6 +11,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import { app } from 'electron';
 import os from 'os';
+import NodeID3 from 'node-id3';
 
 let ffmpegPath = ffmpegStatic;
 // ビルド後
@@ -172,7 +173,6 @@ function getTrackById(trackId) {
 
 // トラックを保存/更新
 function saveTrack(trackData) {
-  console.log(trackData)
   tracksStore.set(trackData.id, trackData);
 }
 
@@ -402,9 +402,17 @@ export function setupStoreIPC() {
         return { success: false, error: 'Track not found' };
       }
 
-      // メタデータを更新
+      // track.jsonのメタデータを更新
       track.metadata = { ...track.metadata, ...newMetadata };
       saveTrack(track);
+
+      // ID3も変更
+      const filePath = path.join(musicDir, track.fileName);
+      const tags = {};
+      if (newMetadata.title) tags.title = newMetadata.title;
+      if (newMetadata.artist) tags.artist = newMetadata.artist;
+      await NodeID3.Promise.update(tags, filePath);
+        
 
       return { success: true, track };
     } catch (error) {
@@ -436,6 +444,12 @@ export function setupStoreIPC() {
       const ext = path.extname(newFileName);
       const baseName = path.basename(newFileName, ext);
       track.metadata.title = baseName;
+
+      // ID3も変更
+      const tags = {
+        title: baseName
+      };
+      await NodeID3.Promise.update(tags, newPath);
 
       saveTrack(track);
 
