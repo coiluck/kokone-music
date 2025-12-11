@@ -226,6 +226,14 @@ section.setting-section .setting-item {
 #setting-reset:active {
   transform: scale(0.95);
 }
+#setting-delete-history {
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#setting-delete-history:hover {
+  color: var(--accent)
+}
 #setting-export {
   text-decoration: underline;
   cursor: pointer;

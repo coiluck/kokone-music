@@ -27,6 +27,8 @@ contextBridge.exposeInMainWorld('music', {
     ipcRenderer.invoke('music:add-history', trackId),
   getHistory: () =>
     ipcRenderer.invoke('music:get-history'),
+  deleteHistory: () => 
+    ipcRenderer.invoke('music:delete-history'),
 });
 
 contextBridge.exposeInMainWorld('playlist', {

@@ -555,6 +555,15 @@ export function setupStoreIPC() {
     }
   });
 
+  ipcMain.handle('music:delete-history', (_event) => {
+    try {
+      historyStore.clear();
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  });
+
   // プレイリストを作成
   ipcMain.handle('playlist:create', (_event, name) => {
     try {

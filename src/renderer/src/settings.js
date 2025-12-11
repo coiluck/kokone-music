@@ -254,7 +254,16 @@ document.getElementById('setting-volume').addEventListener('change', (e) => {
   window.settings.set('music-volume', value);
 });
 
+
+
 // open userdata folder
 document.getElementById('setting-export').addEventListener('click', () => {
   window.openUserDataFolder.open();
+});
+// delete history
+document.getElementById('setting-delete-history').addEventListener('click', () => {
+  if (confirm(`ここで削除を行わない場合でも、再生履歴は30日後に自動的に削除されます。\nすべての再生履歴を直ちに削除してよろしいですか。`)) {
+    window.music.deleteHistory();
+    window.message.showMessage('再生履歴を削除しました。', false);
+  }
 });
