@@ -408,6 +408,7 @@ export function setupStoreIPC() {
 
       // ID3も変更
       const filePath = path.join(musicDir, track.fileName);
+      if (path.extname(filePath).toLowerCase() !== '.mp3') return; // mp3以外は書き込めない
       const tags = {};
       if (newMetadata.title) tags.title = newMetadata.title;
       if (newMetadata.artist) tags.artist = newMetadata.artist;
@@ -426,6 +427,12 @@ export function setupStoreIPC() {
       const track = getTrackById(trackId);
       if (!track) {
         return { success: false, error: 'Track not found' };
+      }
+      const oldExt = path.extname(track.fileName).toLowerCase();
+      const newExt = path.extname(newFileName).toLowerCase();
+
+      if (oldExt !== newExt) {
+        return { success: false, error: '拡張子の変更は許可されていません' };
       }
 
       const oldPath = path.join(musicDir, track.fileName);
@@ -446,6 +453,7 @@ export function setupStoreIPC() {
       track.metadata.title = baseName;
 
       // ID3も変更
+      if (path.extname(newPath).toLowerCase() !== '.mp3') return; // mp3以外は書き込めない
       const tags = {
         title: baseName
       };

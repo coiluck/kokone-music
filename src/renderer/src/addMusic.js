@@ -48,19 +48,22 @@ async function handleFiles(files) {
 
   const filesArray = Array.from(files);
 
-  const mp3Files = filesArray.filter(file => {
-    return file.name.toLowerCase().endsWith('.mp3');
+  const allowedExtensions = ['.mp3', '.wav', '.m4a', '.ogg'];
+  const validFiles = filesArray.filter(file => {
+    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    return allowedExtensions.includes(ext);
   });
   const invalidFiles = filesArray.filter(file => {
-    return !file.name.toLowerCase().endsWith('.mp3');
+    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    return !allowedExtensions.includes(ext);
   });
 
-  if (mp3Files.length === 0 && invalidFiles.length > 0) {
-    await window.message.showMessage('MP3ファイル以外はサポートされていません', false);
+  if (validFiles.length === 0 && invalidFiles.length > 0) {
+    await window.message.showMessage('対応していないファイル形式です。mp3、wav、ogg、m4aのみ対応しています。', false);
     return;
   }
 
-  const filePaths = mp3Files.map(file => {
+  const filePaths = validFiles.map(file => {
     return window.music.getFilePath(file);
   });
 
@@ -88,7 +91,7 @@ async function handleFiles(files) {
 
     if (invalidFiles.length > 0) {
       if (message) message += '\n';
-      message += `MP3ファイル以外の拡張子のためスキップしました: 以下の ${invalidFiles.length} 件\n`;
+      message += `対応していない拡張子であるためスキップしました: 以下の ${invalidFiles.length} 件\n`;
       invalidFiles.forEach(item => {
         message += `・${item.name}\n`;
       });
