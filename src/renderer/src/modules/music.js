@@ -52,12 +52,18 @@ class MusicPlayer {
     this.gainNode.gain.setTargetAtTime(finalGain, this.audioContext.currentTime, 0.1);
   }
 
-  play(filePath, trackInfo = {}, playlist = null) {
+  async play(filePath, trackInfo = {}, playlist = null) {
     // 既存の再生を停止
     this.stop();
 
     if (this.audioContext.state === 'suspended') {
       this.audioContext.resume();
+    }
+
+    const freshTrackData = await window.music.getTrack(trackInfo.id);
+    if (freshTrackData && freshTrackData.metadata) {
+      // 最新の音量データを上書き
+      trackInfo.volume = freshTrackData.metadata.volume;
     }
 
     // 新しい曲情報を保存

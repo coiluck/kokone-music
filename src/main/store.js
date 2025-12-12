@@ -119,6 +119,20 @@ function analyzeLoudness(filePath) {
   });
 }
 
+async function saveCorrectLufs(trackId, filePath) {
+  try {
+    const lufs = await analyzeLoudness(filePath);
+    const track = getTrackById(trackId);
+    if (track) {
+      track.metadata.volume = lufs;
+      saveTrack(track);
+      console.log(`Finished: calc of lufs for ${trackId}`)
+    }
+  } catch (error) {
+    console.error(`Failed: update lufs for ${trackId}:`, error);
+  }
+}
+
 // タグサイズを推定する関数
 function estimateTagSize(buffer) {
   // ID3v2タグの場合、先頭10バイトでサイズが分かる
@@ -225,66 +239,56 @@ export function setupStoreIPC() {
           continue;
         }
 
+        // 保存先のパス
+        let finalPath = destPath;
+        let actualFileName = fileName;
+
         if (fs.existsSync(destPath)) {
           // ファイル名が同じだが、異なる音声データ
           // ファイル名に番号を追加
           const ext = path.extname(fileName);
           const baseName = path.basename(fileName, ext);
           let counter = 1;
-          let newDestPath = destPath;
-
-          while (fs.existsSync(newDestPath)) {
-            newDestPath = path.join(musicDir, `${baseName}_${counter}${ext}`);
+          
+          while (fs.existsSync(finalPath)) {
+            finalPath = path.join(musicDir, `${baseName}_${counter}${ext}`);
             counter++;
           }
-
-          await fs.promises.copyFile(srcPath, newDestPath);
-
-          // メタデータを取得してトラックを作成
-          const metadata = await mm.parseFile(newDestPath);
-          const lufs = await analyzeLoudness(newDestPath);
-          const trackId = uuidv4();
-          const trackData = {
-            id: trackId,
-            fileHash: fileHash,
-            fileName: path.basename(newDestPath),
-            metadata: {
-              title: metadata.common.title || path.parse(newDestPath).name,
-              artist: metadata.common.artist || 'Unknown Artist',
-              duration: metadata.format.duration || 0,
-              volume: lufs
-            },
-            tags: [],
-            addedAt: Date.now()
-          };
-
-          saveTrack(trackData);
-          results.push({ success: true, file: fileName, trackId: trackId });
-          continue;
+          actualFileName = path.basename(finalPath);
         }
 
-        await fs.promises.copyFile(srcPath, destPath);
-        const lufs = await analyzeLoudness(destPath);
-        // メタデータを取得してトラックを作成
-        const metadata = await mm.parseFile(destPath);
+        // ファイルをコピー
+        await fs.promises.copyFile(srcPath, finalPath);
+
+        // メタデータを取得
+        const metadata = await mm.parseFile(finalPath);
+        const defaultLufs = -14.0; // これは仮
         const trackId = uuidv4();
+        
+        // トラックデータを作成
         const trackData = {
           id: trackId,
           fileHash: fileHash,
-          fileName: fileName,
+          fileName: actualFileName,
           metadata: {
-            title: metadata.common.title || path.parse(fileName).name,
+            title: metadata.common.title || path.parse(actualFileName).name,
             artist: metadata.common.artist || 'Unknown Artist',
             duration: metadata.format.duration || 0,
-            volume: lufs
+            volume: defaultLufs // これは後で計算して入れなおす
           },
           tags: [],
           addedAt: Date.now()
         };
 
+        // 先に保存してUIに反映させる
         saveTrack(trackData);
-        results.push({ success: true, file: fileName, trackId: trackId });
+
+        // 後からLUFSを保存
+        saveCorrectLufs(trackId, finalPath);
+
+        results.push({ success: true, file: actualFileName, trackId: trackId });
       } catch (error) {
+        console.error(error);
         results.push({ success: false, file: srcPath, error: error.message });
       }
     }
@@ -360,6 +364,12 @@ export function setupStoreIPC() {
     }
   });
 
+  // 特定の曲のデータを取得
+  ipcMain.handle('music:get-track', (_event, trackId) => {
+    return getTrackById(trackId);
+  });
+
+  // 特定のartistのデータを取得
   ipcMain.handle('music:get-by-artist', async (_event, artistName) => {
     try {
       const allTracks = tracksStore.store || {};
