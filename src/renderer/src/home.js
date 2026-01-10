@@ -3,25 +3,24 @@ import { musicPlayer, secondsToMinutes } from './modules/music.js';
 
 export async function setupHome() {
   // 処理を待つ必要はないのでawaitは不要
-  setUpReccomended();
+  setUpRecommended();
   scanAllMusic();
 }
 
-async function setUpReccomended() {
+async function setUpRecommended() {
   const history = await window.music.getHistory() || [];
   const allMusic = await window.music.getAllMusic() || [];
+  const recommendedSettings = await window.settings.get('recommended');
   // 最近の判定
-  const daysAgo = Date.now() - (document.getElementById('setting-recent-select').value * 24 * 60 * 60 * 1000);
+  const daysAgo = Date.now() - (recommendedSettings.recommendDays * 24 * 60 * 60 * 1000);
   const recentHistory = history.filter(h => h.playedAt >= daysAgo);
-
   if (recentHistory.length < 5 || allMusic.length < 5) {
     // データが足りないので非表示
     document.getElementById('home-recommended-title').style.display = 'none';
     document.getElementById('home-recommended').style.display = 'none';
     return;
-  } else if (0 > 1) {
+  } else if (!recommendedSettings.isNeedRecommend) {
     // おすすめを表示しない設定の場合
-    // 今はこの判定に一致することはない
     document.getElementById('home-recommended-title').style.display = 'none';
     document.getElementById('home-recommended').style.display = 'none';
     return;

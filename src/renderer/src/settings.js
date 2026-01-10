@@ -202,8 +202,10 @@ async function getStoreWindowSize() {
 }
 
 // reccomended
+import { setupHome } from './home.js';
+
 async function getStoreReccomended() {
-  const reccomended = await window.settings.get('reccomended');
+  const reccomended = await window.settings.get('recommended');
   return reccomended;
 }
 function applyReccomended(userReccomended) {
@@ -211,16 +213,18 @@ function applyReccomended(userReccomended) {
   document.getElementById('setting-recent-select').value = userReccomended.recommendDays;
 }
 document.getElementById('setting-is-need-recommend').addEventListener('change', (e) => {
-  window.settings.set('reccomended', {
+  window.settings.set('recommended', {
     isNeedRecommend: e.target.checked,
     recommendDays: Number(document.getElementById('setting-recent-select').value)
   });
+  setupHome();
 });
 document.getElementById('setting-recent-select').addEventListener('change', (e) => {
-  window.settings.set('reccomended', {
+  window.settings.set('recommended', {
     isNeedRecommend: document.getElementById('setting-is-need-recommend').checked,
     recommendDays: Number(e.target.value)
   });
+  setupHome();
 });
 
 import { musicPlayer, secondsToMinutes } from './modules/music.js';

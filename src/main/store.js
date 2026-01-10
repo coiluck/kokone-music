@@ -57,7 +57,7 @@ const settingsSchema = {
       height: { type: 'number' }
     }
   },
-  'reccomended': {
+  'recommended': {
     type: 'object',
     default: {
       isNeedRecommend: true,
