@@ -43,6 +43,9 @@ export async function applySettings() {
   // reccomended用
   const userReccomended = await getStoreReccomended();
   applyReccomended(userReccomended);
+  // skip silence用
+  const userSkipSilence = await getStoreSkipSilence();
+  applySkipSilence(userSkipSilence);
   // normalize music volume用
   const userNormalizeMusicVolume = await getStoreNormalizeMusicVolume();
   applyNormalizeMusicVolume(userNormalizeMusicVolume);
@@ -220,8 +223,22 @@ document.getElementById('setting-recent-select').addEventListener('change', (e) 
   });
 });
 
-import { musicPlayer } from './modules/music.js';
+import { musicPlayer, secondsToMinutes } from './modules/music.js';
 
+// skip silence
+async function getStoreSkipSilence() {
+  const skipSilence = await window.settings.get('skip-silence');
+  return skipSilence;
+}
+function applySkipSilence(skipSilence) {
+  document.getElementById('setting-skip-silence').checked = skipSilence;
+  musicPlayer.setSkipSilenceEnabled(skipSilence);
+}
+document.getElementById('setting-skip-silence').addEventListener('change', (e) => {
+  window.settings.set('skip-silence', e.target.checked);
+  musicPlayer.setSkipSilenceEnabled(e.target.checked);
+  document.getElementById('playerUI-duration-total').textContent = secondsToMinutes(musicPlayer.getDuration());
+});
 // normalize music volume
 async function getStoreNormalizeMusicVolume() {
   const normalizeMusicVolume = await window.settings.get('normalize-music-volume');

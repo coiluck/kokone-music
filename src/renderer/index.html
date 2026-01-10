@@ -255,6 +255,13 @@
                 <div id="setting-delete-history">削除する</div>
               </div>
               <div class="setting-item">
+                <span>無音区間をスキップ</span>
+                <label class="switch">
+                  <input type="checkbox" id="setting-skip-silence">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
                 <span>曲の音量を正規化</span>
                 <label class="switch">
                   <input type="checkbox" id="setting-normalize-music-volume">
@@ -277,13 +284,6 @@
                 </div>
               </div>
             </section>
-            <div class="modal-sub-title">ストレージ</div>
-            <section class="setting-section">
-              <div class="setting-item">
-                <span>エクスポート</span>
-                <div id="setting-export">フォルダを開く</div>
-              </div>
-            </section>
             <div class="modal-sub-title">その他</div>
             <section class="setting-section">
               <div class="setting-item">
@@ -291,8 +291,8 @@
                 <span id="app-version"></span>
               </div>
               <div class="setting-item">
-                <span>ご要望・お問い合わせ</span>
-                <a id="app-call" href="https://docs.google.com/forms/d/e/1FAIpQLScwgyL_yg2BX8pFy2hG8vHjDTWzr2R-TAtf6gtMpljE9fYvMQ/viewform?usp=header" target="_blank">こちらから</a>
+                <span>エクスポート</span>
+                <div id="setting-export">フォルダを開く</div>
               </div>
             </section>
             <p class="app-dev-info">Developed by KOKONE Project</p>
@@ -303,8 +303,8 @@
           <div class="playerUI-main-container">
             <div class="playerUI-icon"></div>
             <div class="playerUI-text-conatainer">
-              <div id="playerUI-title">aaa</div>
-              <div id="playerUI-artist">bbb</div>
+              <div id="playerUI-title">----</div>
+              <div id="playerUI-artist">----</div>
             </div>
             <div class="playerUI-button-container">
               <div id="playerUI-button-prev"></div>
@@ -322,12 +322,12 @@
             </div>
           </div>
           <div id="playerUI-duration-container">
-            <div id="playerUI-duration-current">0:00</div>
+            <div id="playerUI-duration-current">-:--</div>
             <div class="playerUI-duration-seekbar-container">
               <div id="playerUI-duration-seekbar-current"></div>
               <div id="playerUI-duration-seekbar-total"></div>
             </div>
-            <div id="playerUI-duration-total">1:00</div>
+            <div id="playerUI-duration-total">-:--</div>
           </div>
         </div>
 

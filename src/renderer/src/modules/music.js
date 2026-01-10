@@ -13,6 +13,7 @@ class MusicPlayer {
     this.playlist = [];
     this.currentIndex = -1;
     this.shuffleHistory = [];
+    this.isSkipSilenceEnabled = true;
     this.isNormalizationEnabled = true;
     this.userVolume = 1;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -23,6 +24,9 @@ class MusicPlayer {
     this.sourceNode = null;
   }
 
+  setSkipSilenceEnabled(enabled) {
+    this.isSkipSilenceEnabled = enabled;
+  }
   setNormalizationEnabled(enabled) {
     this.isNormalizationEnabled = enabled;
     if (this.currentTrack) {
@@ -44,7 +48,6 @@ class MusicPlayer {
     if (this.isNormalizationEnabled && trackLufs) {
       const diff = TARGET_LUFS - trackLufs;
       normalizationGain = Math.pow(10, diff / 20);
-      console.log(normalizationGain);
     }
 
     const finalGain = this.userVolume * normalizationGain;
@@ -64,6 +67,7 @@ class MusicPlayer {
     if (freshTrackData && freshTrackData.metadata) {
       // 最新の音量データを上書き
       trackInfo.volume = freshTrackData.metadata.volume;
+      trackInfo.trailingSilence = freshTrackData.metadata.trailingSilence || 0;
     }
 
     // 新しい曲情報を保存
@@ -73,7 +77,8 @@ class MusicPlayer {
       title: trackInfo.title || 'Unknown',
       artist: trackInfo.artist || 'Unknown',
       duration: trackInfo.duration || 0,
-      volume: trackInfo.volume
+      volume: trackInfo.volume,
+      trailingSilence: trackInfo.trailingSilence || 0,
     };
 
     if (playlist) {
@@ -83,16 +88,17 @@ class MusicPlayer {
       this.shuffleHistory = [this.currentIndex]; // 新しいプレイリストなら破棄
     }
 
-    setupPlayerUi(
-      this.currentTrack.title,
-      this.currentTrack.artist,
-      secondsToMinutes(this.currentTrack.duration)
-    );
-
     // 新しいAudioインスタンスを作成
     const fileUrl = `media://play?path=${encodeURIComponent(filePath)}`;
     this.audio = new Audio(fileUrl);
     this.audio.crossOrigin = "anonymous";
+
+    const duration = this.getDuration();
+    setupPlayerUi(
+      this.currentTrack.title,
+      this.currentTrack.artist,
+      secondsToMinutes(duration)
+    );
 
     if (this.sourceNode) {
       this.sourceNode.disconnect();
@@ -107,23 +113,25 @@ class MusicPlayer {
       this.error(e)
     });
 
-    this.audio.addEventListener('ended', () => {
-      this.stopTimeUpdate();
-      // 次の曲再生などの処理
-      console.log(this.repeatMode);
-      if (this.repeatMode === 'repeat') {
-        // リピート
-        this.play(this.currentTrack.path, this.currentTrack, null); // プレイリストは維持
-      } else if (this.repeatMode === 'will-stop') {
-        // 停止
-        this.isPlaying = false;
-        updatePlayPauseButton(false);
-      } else {
-        // 残りはリスト順とシャッフル
-        // これはUIの`#playerUI-button-next`からも呼ばれるからこの中でも処理書く！
-        this.next();
+    this.audio.addEventListener('timeupdate', () => {
+      if (this.currentTrack.trailingSilence > 0 && this.isSkipSilenceEnabled) {
+        const effectiveDuration = this.currentTrack.duration - (this.currentTrack.trailingSilence / 1000);
+        if (this.audio.currentTime >= effectiveDuration) {
+          // 無音部分に到達したら次の曲へ
+          this.audio.pause();
+          this.handleTrackEnd();
+        }
       }
     });
+    this.audio.addEventListener('ended', () => {
+      // 通常のend処理
+      // 呼ばれるのは!this.currentTrack.trailingSilence ||
+      // this.currentTrack.trailingSilence === 0 ||
+      // skip設定がoffの場合
+      // 怖いから一応ifつけないでおく
+      trackEnd();
+    });
+
 
     // 再生開始
     this.audio.play()
@@ -137,6 +145,22 @@ class MusicPlayer {
       .catch(error => {
         this.error(error)
       });
+  }
+
+  handleTrackEnd() {
+    this.stopTimeUpdate();
+    if (this.repeatMode === 'repeat') {
+      // リピート
+      this.play(this.currentTrack.path, this.currentTrack, null);
+    } else if (this.repeatMode === 'will-stop') {
+      // 停止
+      this.isPlaying = false;
+      updatePlayPauseButton(false);
+    } else {
+      // 残りはリスト順とシャッフル
+      // これはUIの`#playerUI-button-next`からも呼ばれるからこの中でも処理書く！
+      this.next();
+    }
   }
 
   pause() {
@@ -232,12 +256,17 @@ class MusicPlayer {
   getDuration() {
     if (this.audio) {
       const audioDuration = this.audio.duration;
+      let duration = 0;
       if (audioDuration && audioDuration !== Infinity && !isNaN(audioDuration)) {
-        return audioDuration;
+        duration = audioDuration;
+      } else if (this.currentTrack && this.currentTrack.duration > 0) {
+        duration = this.currentTrack.duration;
       }
-      if (this.currentTrack && this.currentTrack.duration > 0) {
-        return this.currentTrack.duration;
+      // trailingSilence分を引く
+      if (duration > 0 && this.currentTrack && this.currentTrack.trailingSilence && this.isSkipSilenceEnabled) {
+        duration -= (this.currentTrack.trailingSilence / 1000);
       }
+      return duration;
     }
     return 0;
   }
@@ -277,7 +306,7 @@ class MusicPlayer {
     // シークバーを更新
     const seekbarCurrent = document.getElementById('playerUI-duration-seekbar-current');
     if (seekbarCurrent && duration > 0) {
-      const percentage = (currentTime / duration) * 100;
+      const percentage = Math.min((currentTime / duration) * 100, 100);
       seekbarCurrent.style.width = `${percentage}%`;
     }
   }

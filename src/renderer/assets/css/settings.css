@@ -242,14 +242,6 @@ section.setting-section .setting-item {
 #setting-export:hover {
   color: var(--accent)
 }
-#app-call {
-  text-decoration: underline;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-#app-call:hover {
-  color: var(--accent)
-}
 .app-dev-info {
   margin-top: 10px;
   padding-bottom: 10px;

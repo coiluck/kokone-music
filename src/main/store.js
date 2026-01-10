@@ -68,6 +68,10 @@ const settingsSchema = {
       recommendDays: { type: 'number' }
     }
   },
+  'skip-silence': {
+    type: 'boolean',
+    default: true
+  },
   'normalize-music-volume': {
     type: 'boolean',
     default: true
@@ -119,12 +123,72 @@ function analyzeLoudness(filePath) {
   });
 }
 
+function analyzeSilence(filePath) {
+  return new Promise((resolve) => {
+    const nullDevice = os.platform() === 'win32' ? 'NUL' : '/dev/null';
+    let logData = '';
+
+    ffmpeg(filePath)
+      .audioFilters('silencedetect=noise=-70dB:duration=0.1')
+      .format('null')
+      .output(nullDevice)
+      .on('stderr', (stderrLine) => {
+        logData += stderrLine;
+      })
+      .on('end', () => {
+        // 最後の無音区間を検出
+        const silenceEndRegex = /silence_end: ([\d.]+) \| silence_duration: ([\d.]+)/g;
+        const matches = [...logData.matchAll(silenceEndRegex)];
+
+        if (matches.length > 0) {
+          const lastMatch = matches[matches.length - 1];
+          const silenceEnd = parseFloat(lastMatch[1]);
+          const silenceDuration = parseFloat(lastMatch[2]);
+
+          // 曲の総時間を取得
+          const durationRegex = /Duration: (\d{2}):(\d{2}):([\d.]+)/;
+          const durationMatch = logData.match(durationRegex);
+
+          if (durationMatch) {
+            const hours = parseInt(durationMatch[1]);
+            const minutes = parseInt(durationMatch[2]);
+            const seconds = parseFloat(durationMatch[3]);
+            const totalDuration = hours * 3600 + minutes * 60 + seconds;
+
+            // 最後の無音が曲の終わり付近（0.5秒以内）にある場合のみカウント
+            if (Math.abs(silenceEnd - totalDuration) < 0.5) {
+              resolve(silenceDuration * 1000); // ミリ秒に変換
+            } else {
+              resolve(0);
+            }
+          } else {
+            resolve(0);
+          }
+        } else {
+          resolve(0);
+        }
+      })
+      .on('error', (err) => {
+        console.error('Error analyzing silence:', err);
+        resolve(0);
+      })
+      .run();
+  });
+}
+
 async function saveCorrectLufs(trackId, filePath) {
   try {
-    const lufs = await analyzeLoudness(filePath);
+    const [lufs, trailingSilence] = await Promise.all([
+      analyzeLoudness(filePath),
+      analyzeSilence(filePath)
+    ]);
+
+    const skipDuration = trailingSilence - 500 >= 0 ? trailingSilence - 500 : 0; // 500ミリ秒以上の無音区間を切り取る
+
     const track = getTrackById(trackId);
     if (track) {
       track.metadata.volume = lufs;
+      track.metadata.trailingSilence = skipDuration; // ミリ秒
       saveTrack(track);
       console.log(`Finished: calc of lufs for ${trackId}`)
     }
@@ -249,7 +313,7 @@ export function setupStoreIPC() {
           const ext = path.extname(fileName);
           const baseName = path.basename(fileName, ext);
           let counter = 1;
-          
+
           while (fs.existsSync(finalPath)) {
             finalPath = path.join(musicDir, `${baseName}_${counter}${ext}`);
             counter++;
@@ -264,7 +328,7 @@ export function setupStoreIPC() {
         const metadata = await mm.parseFile(finalPath);
         const defaultLufs = -14.0; // これは仮
         const trackId = uuidv4();
-        
+
         // トラックデータを作成
         const trackData = {
           id: trackId,
@@ -274,7 +338,8 @@ export function setupStoreIPC() {
             title: metadata.common.title || path.parse(actualFileName).name,
             artist: metadata.common.artist || 'Unknown Artist',
             duration: metadata.format.duration || 0,
-            volume: defaultLufs // これは後で計算して入れなおす
+            volume: defaultLufs, // これは後で計算して入れなおす
+            trailingSilence: 0, // これは後で計算して入れなおす
           },
           tags: [],
           addedAt: Date.now()
@@ -351,6 +416,7 @@ export function setupStoreIPC() {
             artist: track.metadata.artist,
             duration: track.metadata.duration,
             volume: track.metadata.volume,
+            trailingSilence: track.metadata.trailingSilence || 0,
             tags: track.tags || [],
             addedAt: track.addedAt
           });
@@ -390,6 +456,7 @@ export function setupStoreIPC() {
               artist: track.metadata.artist,
               duration: track.metadata.duration,
               volume: track.metadata.volume,
+              trailingSilence: track.metadata.trailingSilence || 0,
               tags: track.tags || [],
               addedAt: track.addedAt
             });
@@ -423,7 +490,6 @@ export function setupStoreIPC() {
       if (newMetadata.title) tags.title = newMetadata.title;
       if (newMetadata.artist) tags.artist = newMetadata.artist;
       await NodeID3.Promise.update(tags, filePath);
-        
 
       return { success: true, track };
     } catch (error) {
