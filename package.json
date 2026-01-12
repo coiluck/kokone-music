@@ -3,8 +3,7 @@
   "version": "1.2.0",
   "description": "Music Player",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "coiluck",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
