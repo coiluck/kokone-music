@@ -129,7 +129,7 @@ class MusicPlayer {
       // this.currentTrack.trailingSilence === 0 ||
       // skip設定がoffの場合
       // 怖いから一応ifつけないでおく
-      trackEnd();
+      this.handleTrackEnd();
     });
 
 
